@@ -96,9 +96,9 @@ string Connection::readFile(filesystem::path path) {
     return buffer->data();
 }
 
-void Connection::writeToFile(filesystem::path path, auto data) {
+void Connection::writeToFile(filesystem::path path, string data) {
     ofstream file{path.string(), ofstream::binary};
-    file.write(data, sizeof(data));
+    file.write(data.c_str(), sizeof(data));
     file.flush();
     file.close();
     return;

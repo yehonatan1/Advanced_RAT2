@@ -62,7 +62,7 @@ class Connection {
     string readFile(filesystem::path path);
 
     //Write data to a file in path
-    void writeToFile(filesystem::path path, auto data);
+    void writeToFile(filesystem::path path, string data);
 
     //Creating the connection
     void connection(SOCKET socket);
