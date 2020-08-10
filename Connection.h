@@ -65,7 +65,7 @@ class Connection {
     void writeToFile(filesystem::path path, string data);
 
     //Creating the connection
-    void connection(SOCKET socket);
+    void connection();
 
 
 };
