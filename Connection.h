@@ -34,6 +34,8 @@ class Connection {
     vector<filesystem::path> *files;
     SOCKET sock;
 
+public:
+
     //Initialize ip and string
     Connection(string ip, unsigned int port);
 
@@ -44,7 +46,7 @@ class Connection {
     void recvFile(string path);
 
     //Sending message to the server
-    void sendMessage(string message);
+    void sendMessage(auto *message);
 
     //Getting command from the server
     void executeShell(string shell);

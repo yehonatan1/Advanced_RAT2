@@ -6,7 +6,9 @@
 
 ShareScreen::ShareScreen() {}
 
-void ShareScreen::takeScreenShoot(const wchar_t *path) {
+
+//Taking screenshot
+void ShareScreen::takeScreenShot() {
     using namespace Gdiplus;
     GdiplusStartupInput gdiplusStartupInput;
     ULONG_PTR gdiplusToken;
@@ -15,8 +17,7 @@ void ShareScreen::takeScreenShoot(const wchar_t *path) {
         HDC scrdc, memdc;
         HBITMAP membit;
         scrdc = ::GetDC(0);
-        int Height = GetSystemMetrics(SM_CYSCREEN);
-        int Width = GetSystemMetrics(SM_CXSCREEN);
+
         memdc = CreateCompatibleDC(scrdc);
         membit = CreateCompatibleBitmap(scrdc, Width, Height);
         HBITMAP hOldBitmap = (HBITMAP) SelectObject(memdc, membit);
@@ -25,7 +26,15 @@ void ShareScreen::takeScreenShoot(const wchar_t *path) {
         CLSID clsid;
         GetEncoderClsid(L"image/jpeg", &clsid);
         //        bitmap.Save((IStream *) path, &clsid);
-        bitmap.Save(path, &clsid);
+        //bitmap.Save(path, &clsid);
+        if (!change) {
+            insertColor(bitmap, img1);
+            change = true;
+        } else {
+            insertColor(bitmap, img2);
+            change = false;
+        }
+
         SelectObject(memdc, hOldBitmap);
         DeleteObject(memdc);
         DeleteObject(membit);
@@ -34,6 +43,7 @@ void ShareScreen::takeScreenShoot(const wchar_t *path) {
     GdiplusShutdown(gdiplusToken);
 }
 
+//Help function to takeScreenShot
 int ShareScreen::GetEncoderClsid(const WCHAR *format, CLSID *pClsid) {
     UINT num = 0; // number of image encoders
     UINT size = 0; // size of the image encoder array in bytes
@@ -56,33 +66,59 @@ int ShareScreen::GetEncoderClsid(const WCHAR *format, CLSID *pClsid) {
     return 0;
 }
 
+//Insert to any pixel in pixels a color from img1 or img2
+void ShareScreen::insertColor(Bitmap &bitmap, Color **pixels[1440][2580]) {
+    Color color;
+    for (int i = 0; i < 1440; i++) {
+        for (int j = 0; j < 2580; j++) {
+            bitmap.GetPixel(i, j, &color);
+            **pixels[i][j] = color;
+        }
+    }
+}
+
+//Comparing two images and returning the bytes that changed
+Color **ShareScreen::compareImages(Color **img1[1440][2580], Color **img2[1440][2580]) {
 
 
+    Color **imgDifference = nullptr;
+    imgDifference = reinterpret_cast<Color **>(new int *[1440]);
+    for (int h = 0; h < 1440; h++) {
+        imgDifference[h] = reinterpret_cast<Color *>(new int[2580]);
+        for (int w = 0; w < 2580; w++) {
+            if ((**img1[h][w]).GetValue() != (**img2[h][w]).GetValue()) {
+                if (change) {
+                    imgDifference[h][w] = **img2[h][w];
+                    continue;
+                }
+                imgDifference[h][w] = **img1[h][w];
+                continue;
+            }
+            imgDifference[h][w] = NULL;
+        }
+    }
+    return imgDifference;
+}
+
+//Screen sharing in the first time sending img1 and after sending the bytes that changed between img1 and img2
+void ShareScreen::ShareScreenLive(SOCKET socket) {
+    //This will be sending to the server if img1 != img2
+    Color **changedBytes = nullptr;
 
 
+    //First sending the first image (img1)
+    Color **imgToSend[1440][2580];
+    **imgToSend = **img1;
+    send(socket, reinterpret_cast<const char *>(imgToSend), sizeof(imgToSend), 0);
+    delete **imgToSend;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //Sending every time the bytes that changed
+    while (true) {
+        takeScreenShot();
+        changedBytes = compareImages(img1, img2);
+        send(socket, reinterpret_cast<const char *>(changedBytes), sizeof(changedBytes), 0);
+    }
+    delete changedBytes;
+}
 
 

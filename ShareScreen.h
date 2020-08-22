@@ -5,33 +5,47 @@
 #ifndef ADVANCED_RAT2_SHARESCREEN_H
 #define ADVANCED_RAT2_SHARESCREEN_H
 
+
 #include <iostream>
 #include <windows.h>
 #include <GdiPlus.h>
+#include <memory>
 #include "Connection.h"
 
 
 using namespace std;
 using namespace Gdiplus;
 
+static const int Height = GetSystemMetrics(SM_CYSCREEN);
+static const int Width = GetSystemMetrics(SM_CXSCREEN);
 
 class ShareScreen {
 
-    int Height = GetSystemMetrics(SM_CYSCREEN);
-    int Width = GetSystemMetrics(SM_CXSCREEN);
+    //If false insertColor on img1 if true insertColor on img2
+    bool change = false;
 
-    void takeScreenShoot(const wchar_t *path);
 
+    //Images
+    Color **img1[1440][2580];
+    Color **img2[1440][2580];
+
+    ShareScreen();
+
+    //Taking screenshot
+    void takeScreenShot();
+
+    //Help function to takeScreenShot
     int GetEncoderClsid(const WCHAR *format, CLSID *pClsid);
 
 
-     compareImages();
+    //Insert to any pixel in pixels a color from img1 or img2
+    void insertColor(Bitmap &bitmap, Color **pixels[1440][2580]);
 
+    //Comparing two images and returning the bytes that changed
+    Color **compareImages(Color **img1[1440][2580], Color **img2[1440][2580]);
+
+    //Screen sharing in the first time sending img1 and after sending the bytes that changed between img1 and img2
     void ShareScreenLive(SOCKET socket);
-
-
-
-
 
 };
 
