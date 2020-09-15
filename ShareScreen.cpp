@@ -108,17 +108,23 @@ void ShareScreen::ShareScreenLive(SOCKET socket) {
 
     //First sending the first image (img1)
     Color **imgToSend[1440][2580];
+    takeScreenShot();
     **imgToSend = **img1;
     send(socket, reinterpret_cast<const char *>(imgToSend), sizeof(imgToSend), 0);
     delete **imgToSend;
 
     //Sending every time the bytes that changed
-    while (true) {
-        takeScreenShot();
-        changedBytes = compareImages(img1, img2);
-        send(socket, reinterpret_cast<const char *>(changedBytes), sizeof(changedBytes), 0);
+    try{
+        while (true) {
+            takeScreenShot();
+            changedBytes = compareImages(img1, img2);
+            send(socket, reinterpret_cast<const char *>(changedBytes), sizeof(changedBytes), 0);
+
+        }
+
+    } catch (exception &e) {
+        cout << e.what() << endl;
     }
-    delete changedBytes;
 }
 
 
