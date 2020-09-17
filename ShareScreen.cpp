@@ -126,5 +126,3 @@ void ShareScreen::ShareScreenLive(SOCKET socket) {
         cout << e.what() << endl;
     }
 }
-
-
