@@ -1,0 +1,115 @@
+#include <iostream>
+#include <opencv2/opencv.hpp>
+#include <Windows.h>
+#include <SFML/Audio.hpp>
+
+
+using namespace std;
+using namespace cv;
+
+
+
+
+/*
+Mat compareFrames(Mat frame1, Mat frame2 , int colum , int row) {
+	Mat comparedFrames;
+	for (int h = 0; h < colum; h++) {
+		for (int w = 0; w < colum; w++) {
+			cout << "frame1:" << frame1.at<char>(h, w) << "\n";
+			cout << "frame2:" << frame2.at<char>(h, w) << "\n";
+
+			cout << "frame11:" << frame1.at<double>(h) << "\n";
+			cout << "frame12:" << frame1.at<float>(w) << "\n";
+
+			if (frame1.at<char>(h, w) != frame2.at<char>(h, w)) {
+				if (true) {
+					comparedFrames.at<char>(h, w) = frame2.at<char>(h, w);
+					continue;
+				}
+				comparedFrames.at<char>(h, w) = frame1.at<char>(h, w);
+				continue;
+			}
+			//comparedFrames.at<char>(h, w) = NULL;
+		}
+	}
+	return comparedFrames;
+}
+*/
+
+
+
+
+
+Mat compare(Mat frame1, Mat frame2) {
+
+	Mat changedBytes;
+
+
+	for (int x = 0; x < frame1.cols; x++)
+	{
+		for (int y = 0; y < frame1.rows; y++)
+		{
+			size_t index = y * frame1.cols * 3 + x * 3;
+			if (frame1.data[index + 0] != frame2.data[index + 0] || frame1.data[index + 1] != frame2.data[index + 1] || frame1.data[index + 2] != frame2.data[index + 2]){
+				frame1.data[index + 0] = frame2.data[index + 0];
+				frame1.data[index + 1] = frame2.data[index + 1];
+				frame1.data[index + 2] = frame2.data[index + 2];
+				continue;
+			}
+			frame1.data[index + 0] = NULL;
+			frame1.data[index + 1] = NULL;
+			frame1.data[index + 2] = NULL;
+		}
+	}
+	return frame1;
+}
+
+
+int main() {
+
+	VideoCapture camera(0);
+	
+
+	Mat frame1 = imread("C:\\Users\\avita\\OneDrive\\Pictures\\Camera imports\\test2.png" , IMREAD_COLOR);
+	Mat frame2 = imread("C:\\Users\\avita\\OneDrive\\Pictures\\Camera imports\\test1.png" , IMREAD_COLOR);
+
+	//camera >> frame1;
+	//camera >> frame2;
+
+	//imwrite("C:\\C projects\\img1.png", frame1);
+	//cout << "Test Test Test Test" << endl;
+	//Sleep(5000);
+	//imwrite("C:\\C projects\\img2.png", frame2);
+	
+	Mat compared = compare(frame1, frame2);
+	imwrite("C:\\Users\\avita\\OneDrive\\Pictures\\Camera imports\\compared.png", compared);
+
+	
+	/*
+	const size_t num_channels = 3;
+
+	for (int x = 0; x < frame1.cols; x++)
+	{
+		for (int y = 0; y < frame1.rows; y++)
+		{
+			size_t index = y * frame1.cols * num_channels + x * num_channels;
+
+			frame1.data[index + 0] = 0; // B
+			frame1.data[index + 1] = 0; // G
+			frame1.data[index + 2] = 255; // R 
+			
+		}
+	}
+
+	imshow("frame", frame1);
+*/
+
+	
+
+
+	//compared = compareFrames(frame1, frame2, frame1.cols, frame2.rows);
+
+	
+	//imwrite("C:\\C projects\\compared.png", compared);
+   return 0;
+}
