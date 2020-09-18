@@ -114,7 +114,7 @@ void ShareScreen::ShareScreenLive(SOCKET socket) {
     delete **imgToSend;
 
     //Sending every time the bytes that changed
-    try{
+    try {
         while (true) {
             takeScreenShot();
             changedBytes = compareImages(img1, img2);

@@ -23,7 +23,7 @@ class ShareCamera {
 
 
     //Compare two Mat frames
-    vector<unsigned int> *compareFrames(Mat* frame1, Mat* frame2);
+    vector<unsigned int> *compareFrames(Mat *frame1, Mat *frame2);
 
 
     //Comparing two frames and send the diffrences
