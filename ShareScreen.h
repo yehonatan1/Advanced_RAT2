@@ -8,15 +8,9 @@
 
 
 #include <iostream>
-
-
-
 #include <WS2tcpip.h>
 #include <windows.h>
 #include <GdiPlus.h>
-
-
-
 #include <memory>
 
 

