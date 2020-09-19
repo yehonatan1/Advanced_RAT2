@@ -12,8 +12,8 @@ Connection::Connection(string ip, unsigned int port) {
 
 }
 
-void Connection::sendMessage(auto *message) {
-    send(sock, reinterpret_cast<const char *>(message), message->size(), 0);
+void Connection::sendMessage(auto *message , SOCKET socket) {
+    send(socket, reinterpret_cast<const char *>(message), message->size(), 0);
     return;
 }
 

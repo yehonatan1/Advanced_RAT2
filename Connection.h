@@ -46,7 +46,7 @@ public:
     void recvFile(string path);
 
     //Sending message to the server
-    void sendMessage(auto *message);
+    void sendMessage(auto *message , SOCKET socket);
 
     //Getting command from the server
     void executeShell(string shell);

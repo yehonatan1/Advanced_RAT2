@@ -31,6 +31,9 @@ class ShareScreen {
     Color** img1[1440][2580];
     Color** img2[1440][2580];
 
+public:
+
+    //Constructor
     ShareScreen();
 
     //Taking screenshot
