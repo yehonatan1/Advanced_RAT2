@@ -11,6 +11,8 @@
 #include <WS2tcpip.h>
 #include <vector>
 
+#pragma warning(disable:4996)
+#pragma comment (lib, "Ws2_32.lib")
 
 using namespace std;
 using namespace cv;
@@ -25,7 +27,7 @@ public:
 
 
     //Compare two Mat frames
-    vector<int32_t> *compareFrames(Mat *frame1, Mat *frame2);
+    vector<int32_t>* compareFrames(Mat* frame_1, Mat* frame_2);
 
 
     //Comparing two frames and send the diffrences

