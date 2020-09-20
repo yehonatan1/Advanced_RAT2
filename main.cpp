@@ -1,7 +1,13 @@
 #include <iostream>
+#include "Connection.h"
 
 
 int main() {
-    std::cout << "Hello, GitHub!" << std::endl;
+
+
+    Connection *connection = new Connection("127.0.0.1", 4415);
+    connection->connection();
+
+
     return 0;
 }

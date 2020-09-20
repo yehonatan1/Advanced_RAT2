@@ -4,7 +4,9 @@
 #include "ShareScreen.h"
 
 
-ShareScreen::ShareScreen() {}
+ShareScreen::ShareScreen(SOCKET sock) {
+    socket = sock;
+}
 
 
 //Taking screenshot
@@ -20,7 +22,7 @@ void ShareScreen::takeScreenShot() {
 
         memdc = CreateCompatibleDC(scrdc);
         membit = CreateCompatibleBitmap(scrdc, Width, Height);
-        HBITMAP hOldBitmap = (HBITMAP)SelectObject(memdc, membit);
+        HBITMAP hOldBitmap = (HBITMAP) SelectObject(memdc, membit);
         BitBlt(memdc, 0, 0, Width, Height, scrdc, 0, 0, SRCCOPY);
         Gdiplus::Bitmap bitmap(membit, NULL);
 
@@ -31,8 +33,7 @@ void ShareScreen::takeScreenShot() {
         if (!change) {
             insertColor(bitmap, img1);
             change = true;
-        }
-        else {
+        } else {
             insertColor(bitmap, img2);
             change = false;
         }
@@ -46,14 +47,14 @@ void ShareScreen::takeScreenShot() {
 }
 
 //Help function to takeScreenShot
-int ShareScreen::GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
+int ShareScreen::GetEncoderClsid(const WCHAR *format, CLSID *pClsid) {
     UINT num = 0; // number of image encoders
     UINT size = 0; // size of the image encoder array in bytes
-    ImageCodecInfo* pImageCodecInfo = NULL;
+    ImageCodecInfo *pImageCodecInfo = NULL;
     GetImageEncodersSize(&num, &size);
     if (size == 0)
         return -1; // Failure
-    pImageCodecInfo = (ImageCodecInfo*)(malloc(size));
+    pImageCodecInfo = (ImageCodecInfo *) (malloc(size));
     if (pImageCodecInfo == NULL)
         return -1; // Failure
     GetImageEncoders(num, size, pImageCodecInfo);
@@ -69,7 +70,7 @@ int ShareScreen::GetEncoderClsid(const WCHAR* format, CLSID* pClsid) {
 }
 
 //Insert to any pixel in pixels a color from img1 or img2
-void ShareScreen::insertColor(Bitmap& bitmap, Color** pixels[1440][2580]) {
+void ShareScreen::insertColor(Bitmap &bitmap, Color **pixels[1440][2580]) {
     Color color;
     for (int i = 0; i < 1440; i++) {
         for (int j = 0; j < 2580; j++) {
@@ -80,13 +81,13 @@ void ShareScreen::insertColor(Bitmap& bitmap, Color** pixels[1440][2580]) {
 }
 
 //Comparing two images and returning the bytes that changed
-Color** ShareScreen::compareImages(Color** img1[1440][2580], Color** img2[1440][2580]) {
+Color **ShareScreen::compareImages(Color **img1[1440][2580], Color **img2[1440][2580]) {
 
 
-    Color** imgDifference = nullptr;
-    imgDifference = reinterpret_cast<Color**>(new int* [1440]);
+    Color **imgDifference = nullptr;
+    imgDifference = reinterpret_cast<Color **>(new int *[1440]);
     for (int h = 0; h < 1440; h++) {
-        imgDifference[h] = reinterpret_cast<Color*>(new int[2580]);
+        imgDifference[h] = reinterpret_cast<Color *>(new int[2580]);
         for (int w = 0; w < 2580; w++) {
             if ((**img1[h][w]).GetValue() != (**img2[h][w]).GetValue()) {
                 if (change) {
@@ -103,29 +104,28 @@ Color** ShareScreen::compareImages(Color** img1[1440][2580], Color** img2[1440][
 }
 
 //Screen sharing in the first time sending img1 and after sending the bytes that changed between img1 and img2
-void ShareScreen::ShareScreenLive(SOCKET socket) {
+void ShareScreen::ShareScreenLive() {
     //This will be sending to the server if img1 != img2
-    Color** changedBytes = nullptr;
+    Color **changedBytes = nullptr;
 
 
     //First sending the first image (img1)
-    Color** imgToSend[1440][2580];
+    Color **imgToSend[1440][2580];
     takeScreenShot();
     **imgToSend = **img1;
-    send(socket, reinterpret_cast<const char*>(imgToSend), sizeof(imgToSend), 0);
-    delete** imgToSend;
+    send(socket, reinterpret_cast<const char *>(imgToSend), sizeof(imgToSend), 0);
+    delete **imgToSend;
 
     //Sending every time the bytes that changed
     try {
         while (true) {
             takeScreenShot();
             changedBytes = compareImages(img1, img2);
-            send(socket, reinterpret_cast<const char*>(changedBytes), sizeof(changedBytes), 0);
+            send(socket, reinterpret_cast<const char *>(changedBytes), sizeof(changedBytes), 0);
 
         }
-
     }
-    catch (exception& e) {
+    catch (exception &e) {
         cout << e.what() << endl;
     }
 }

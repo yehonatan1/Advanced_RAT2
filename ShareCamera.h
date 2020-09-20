@@ -27,7 +27,7 @@ public:
 
 
     //Compare two Mat frames
-    vector<int32_t>* compareFrames(Mat* frame_1, Mat* frame_2);
+    vector<int32_t> *compareFrames(Mat *frame_1, Mat *frame_2);
 
 
     //Comparing two frames and send the diffrences

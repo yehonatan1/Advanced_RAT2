@@ -3,7 +3,7 @@
 //
 
 #include "ShareCamera.h"
-
+#include <windows.h>
 
 ShareCamera::ShareCamera() {}
 
@@ -11,9 +11,9 @@ ShareCamera::ShareCamera() {}
 
 //Returning int32_t vector
 
-vector<int32_t>* ShareCamera::compareFrames(Mat* frame_1, Mat* frame_2) {
+vector<int32_t> *ShareCamera::compareFrames(Mat *frame_1, Mat *frame_2) {
 
-    vector<int32_t>* changedBytes = {};
+    vector<int32_t> *changedBytes = {};
 
     for (int x = 0; x < frame_1->cols; x++) {
         for (int y = 0; y < frame_1->rows; y++) {
@@ -46,9 +46,9 @@ void ShareCamera::ShareCameraLive(SOCKET socket) {
     }
 
     camera >> frame1;
-    send(socket, reinterpret_cast<const char*>(frame1.data), frame1.total() * frame1.elemSize(), 0);
+    send(socket, reinterpret_cast<const char *>(frame1.data), frame1.total() * frame1.elemSize(), 0);
 
-    vector<int32_t>* changedBytes = {};
+    vector<int32_t> *changedBytes = {};
 
     try {  //Comparing and sending frame1 and frame2
         while (true) {
@@ -56,16 +56,15 @@ void ShareCamera::ShareCameraLive(SOCKET socket) {
             if (compare) {             //If compare is true so compareFrames will compare frame2 to frame1
                 camera >> frame2;
                 changedBytes = compareFrames(&frame2, &frame1);
-                send(socket, reinterpret_cast<const char*>(changedBytes), sizeof(*changedBytes), 0);
-            }
-            else {                 //If compare is false so compareFrames will compare frame1 to frame2
+                send(socket, reinterpret_cast<const char *>(changedBytes), sizeof(*changedBytes), 0);
+            } else {                 //If compare is false so compareFrames will compare frame1 to frame2
                 camera >> frame1;
                 changedBytes = compareFrames(&frame1, &frame2);
-                send(socket, reinterpret_cast<const char*>(changedBytes), sizeof(*changedBytes), 0);
+                send(socket, reinterpret_cast<const char *>(changedBytes), sizeof(*changedBytes), 0);
             }
         }
     }
-    catch (exception& e) {          //Catching any exception
+    catch (exception &e) {          //Catching any exception
         cout << e.what() << endl;
     }
 }
