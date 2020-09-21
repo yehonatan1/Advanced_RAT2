@@ -23,7 +23,7 @@ class ShareCamera {
 
 public:
     //Constructor
-    ShareCamera();
+    ShareCamera(SOCKET sock);
 
 
     //Compare two Mat frames
@@ -31,8 +31,10 @@ public:
 
 
     //Comparing two frames and send the diffrences
-    void ShareCameraLive(SOCKET socket);
+    void ShareCameraLive();
 
+    //SOCKET of the class
+    SOCKET socket;
 
     //Frames
     Mat frame1;

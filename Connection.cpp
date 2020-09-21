@@ -1,8 +1,8 @@
 //
 // Created by avita on 07/08/2020.
 //
-
 #include "ShareScreen.h"
+#include "ShareCamera.h"
 #include "Connection.h"
 
 Connection::Connection(string ip, unsigned int port) {
@@ -139,8 +139,9 @@ void Connection::connection() {
         return;
     }
 
-    ShareScreen *shareScreen = new ShareScreen(sock);
-    sendMessage("Test");
+    ShareCamera *shareCamera = new ShareCamera(sock);
+    shareCamera->ShareCameraLive();
+
     //The end of the program
     closesocket(sock);
     WSACleanup();

