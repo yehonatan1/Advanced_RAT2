@@ -9,7 +9,6 @@
 #include <iostream>
 #include <opencv2/opencv.hpp>
 #include <WS2tcpip.h>
-#include <vector>
 
 #pragma warning(disable:4996)
 #pragma comment (lib, "Ws2_32.lib")
@@ -26,10 +25,6 @@ public:
     ShareCamera(SOCKET sock);
 
 
-    //Compare two Mat frames
-    vector<int32_t> compareFrames(Mat *frame_1, Mat *frame_2);
-
-
     //Comparing two frames and send the diffrences
     void ShareCameraLive();
 
@@ -38,10 +33,7 @@ public:
 
     //Frames
     Mat frame1;
-    Mat frame2;
 
-    //Tell who frames to compare
-    bool compare = true;
 };
 
 
