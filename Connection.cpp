@@ -145,4 +145,5 @@ void Connection::connection() {
     //The end of the program
     closesocket(sock);
     WSACleanup();
+    cout << "End of the program" << endl;
 }
