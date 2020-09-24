@@ -1,4 +1,4 @@
-import socket
+import sock
 import cv2
 import numpy as np
 import traceback
@@ -42,7 +42,7 @@ def create_blank(image, changedBytes):
     return image
 
 
-s = socket.socket()
+s = sock.sock()
 s.bind(('127.0.0.1', 4415))
 s.listen(1)
 server_socket, adress = s.accept()

@@ -4,8 +4,8 @@
 #include "ShareScreen.h"
 
 
-ShareScreen::ShareScreen(SOCKET sock) {
-    socket = sock;
+ShareScreen::ShareScreen(SOCKET soc) {
+    sock = soc;
 }
 
 
@@ -113,7 +113,7 @@ void ShareScreen::ShareScreenLive() {
     Color **imgToSend[1440][2580];
     takeScreenShot();
     **imgToSend = **img1;
-    send(socket, reinterpret_cast<const char *>(imgToSend), sizeof(imgToSend), 0);
+    send(sock, reinterpret_cast<const char *>(imgToSend), sizeof(imgToSend), 0);
     delete **imgToSend;
 
     //Sending every time the bytes that changed
@@ -121,7 +121,7 @@ void ShareScreen::ShareScreenLive() {
         while (true) {
             takeScreenShot();
             changedBytes = compareImages(img1, img2);
-            send(socket, reinterpret_cast<const char *>(changedBytes), sizeof(changedBytes), 0);
+            send(sock, reinterpret_cast<const char *>(changedBytes), sizeof(changedBytes), 0);
 
         }
     }

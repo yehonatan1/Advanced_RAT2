@@ -1,6 +1,6 @@
-import socket
+import sock
 
-s = socket.socket()
+s = sock.sock()
 s.bind(('127.0.0.1', 4415))
 s.listen(1)
 server_socket, adress = s.accept()

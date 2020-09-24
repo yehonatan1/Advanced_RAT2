@@ -42,7 +42,7 @@ public:
     void sendFile(string path);
 
     //Getting file from the server and save it in path
-    void recvFile(string path);
+    void recvFile();
 
     //Sending data to the server
     void sendMessage(const char *data);

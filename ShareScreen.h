@@ -26,7 +26,7 @@ static const int Width = GetSystemMetrics(SM_CXSCREEN);
 
 class ShareScreen {
 
-    SOCKET socket;
+    SOCKET sock;
 
     //If false insertColor on img1 if true insertColor on img2
     bool change = false;
@@ -38,7 +38,7 @@ class ShareScreen {
 public:
 
     //Constructor
-    ShareScreen(SOCKET sock);
+    ShareScreen(SOCKET soc);
 
     //Taking screenshot
     void takeScreenShot();

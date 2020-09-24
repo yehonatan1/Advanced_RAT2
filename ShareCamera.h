@@ -22,14 +22,14 @@ class ShareCamera {
 
 public:
     //Constructor
-    ShareCamera(SOCKET sock);
+    ShareCamera(SOCKET soc);
 
 
     //Comparing two frames and send the diffrences
     void ShareCameraLive();
 
     //SOCKET of the class
-    SOCKET socket;
+    SOCKET sock;
 
     //Frames
     Mat frame1;
