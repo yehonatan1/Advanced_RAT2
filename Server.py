@@ -99,13 +99,9 @@ class Server:
                 self.receive_file_from_client(False)
 
 
-            elif command.startswith("cmd"):
-                self.receive_file_from_client(True)
-                file_content = ''
-                with open("C:\\C projects\\CMD_Text.txt") as file:
-                    for line in file.readlines():
-                        file_content += line
-                print(file_content)
+            elif command.startswith("cmd")
+                data = self.server_socket.recv(1024)
+                print(data.decode())
 
 
 
@@ -149,8 +145,8 @@ class Server:
         self.server_socket.close()
 
 
-myServer = Server(7613, '127.0.0.1', 1, 'client1')
-myServer2 = Server(9999, '127.0.0.1', 1, 'client2')
+myServer = Server(7613, '0.0.0.0', 1, 'client1')
+myServer2 = Server(9999, '0.0.0.0', 1, 'client2')
 
 t1 = threading.Thread(target=myServer.runThread, args=())
 t2 = threading.Thread(target=myServer2.runThread, args=())
