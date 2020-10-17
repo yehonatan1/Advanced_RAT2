@@ -99,7 +99,7 @@ class Server:
                 self.receive_file_from_client(False)
 
 
-            elif command.startswith("cmd")
+            elif command.startswith("cmd"):
                 data = self.server_socket.recv(1024)
                 print(data.decode())
 
