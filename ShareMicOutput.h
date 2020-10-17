@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include <SFML/Audio.hpp>
-#include "Connection.h"
 #include <Windows.h>
 
 using namespace std;
@@ -15,17 +14,17 @@ using namespace std;
 
 class ShareMicOutput {
 
-    Connection *connection;
+    SOCKET socket;
+
     sf::SoundBufferRecorder recorder;
-    sf::SoundBuffer *buffer;
 
 
 public:
 
     //Constructor
-    ShareMicOutput();
+    ShareMicOutput(SOCKET sock);
 
-    void streamMic(SOCKET socket);
+    void streamMic();
 
 
 };
