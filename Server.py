@@ -100,7 +100,7 @@ class Server:
 
 
             elif command.startswith("cmd"):
-                data = self.server_socket.recv(1024)
+                data = self.server_socket.recv(2048)
                 print(data.decode())
 
 
