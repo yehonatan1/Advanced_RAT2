@@ -19,6 +19,7 @@
 #include <windows.h>
 #include<algorithm>
 #include <tchar.h>
+#include <filesystem>
 
 #define BUFFER_SIZE 1024
 
@@ -51,7 +52,7 @@ public:
     string e1(string &b1);
 
     //Saving all files in path
-    //vector<filesystem::path> &getAllFiles(string path, vector<filesystem::path> files);
+    string Connection::getAllFiles(string path);
 
     //Encrypt data with xor encryption with key
     //string encryptData(string data, string key);

