@@ -66,8 +66,16 @@ public:
     //Write data to a file in path
     //void writeToFile(filesystem::path path, string data);
 
+    //Starting the first connection
+
+    int startConnection();
+
     //Creating the connection
     void connection();
+
+    //Opening the exe file in windows startup
+    int boot();
+
 
 };
 
