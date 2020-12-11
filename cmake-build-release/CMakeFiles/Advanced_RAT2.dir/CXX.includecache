@@ -1,0 +1,38 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/avita/Advanced RAT2/Connection.cpp
+Connection.h
+C:/Users/avita/Advanced RAT2/Connection.h
+
+C:/Users/avita/Advanced RAT2/Connection.h
+iostream
+-
+string
+-
+cstring
+-
+vector
+-
+memory
+-
+fstream
+-
+WS2tcpip.h
+-
+windows.h
+-
+algorithm
+-
+tchar.h
+-
+Lmcons.h
+-
+filesystem
+-
+

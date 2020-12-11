@@ -1,0 +1,101 @@
+The system is: Windows - 10.0.19041 - AMD64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64/cl.exe 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+Microsoft (R) C/C++ Optimizing Compiler Version 19.27.29112 for x64
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+CMakeCCompilerId.c
+Microsoft (R) Incremental Linker Version 14.27.29112.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:CMakeCCompilerId.exe 
+CMakeCCompilerId.obj 
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.exe"
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.obj"
+
+The C compiler identification is MSVC, found in "C:/Users/avita/Advanced RAT2/cmake-build-release/CMakeFiles/3.17.3/CompilerIdC/CMakeCCompilerId.exe"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64/cl.exe 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+Microsoft (R) C/C++ Optimizing Compiler Version 19.27.29112 for x64
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+CMakeCXXCompilerId.cpp
+Microsoft (R) Incremental Linker Version 14.27.29112.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+/out:CMakeCXXCompilerId.exe 
+CMakeCXXCompilerId.obj 
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.exe"
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.obj"
+
+The CXX compiler identification is MSVC, found in "C:/Users/avita/Advanced RAT2/cmake-build-release/CMakeFiles/3.17.3/CompilerIdCXX/CMakeCXXCompilerId.exe"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: C:/Users/avita/Advanced RAT2/cmake-build-release/CMakeFiles/CMakeTmp
+
+Run Build Command(s):nmake /nologo cmTC_a30d8\fast && 	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\bin\HostX64\x64\nmake.exe"  -f CMakeFiles\cmTC_a30d8.dir\build.make /nologo -L                  CMakeFiles\cmTC_a30d8.dir\build
+Building C object CMakeFiles/cmTC_a30d8.dir/testCCompiler.c.obj
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\cl.exe @C:\Users\avita\AppData\Local\Temp\nm6EEA.tmp
+testCCompiler.c
+Linking C executable cmTC_a30d8.exe
+	C:\Users\avita\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\202.7660.37\bin\cmake\win\bin\cmake.exe -E vs_link_exe --intdir=CMakeFiles\cmTC_a30d8.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\mt.exe --manifests  -- C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\link.exe /nologo @CMakeFiles\cmTC_a30d8.dir\objects1.rsp @C:\Users\avita\AppData\Local\Temp\nm7035.tmp
+	powershell -noprofile -executionpolicy Bypass -file C:/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary "C:/Users/avita/Advanced RAT2/cmake-build-release/CMakeFiles/CMakeTmp/cmTC_a30d8.exe" -installedDir C:/vcpkg/installed/x64-windows/debug/bin -OutVariable out
+
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: C:/Users/avita/Advanced RAT2/cmake-build-release/CMakeFiles/CMakeTmp
+
+Run Build Command(s):nmake /nologo cmTC_a12ba\fast && 	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\bin\HostX64\x64\nmake.exe"  -f CMakeFiles\cmTC_a12ba.dir\build.make /nologo -L                  CMakeFiles\cmTC_a12ba.dir\build
+Building C object CMakeFiles/cmTC_a12ba.dir/CMakeCCompilerABI.c.obj
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\cl.exe @C:\Users\avita\AppData\Local\Temp\nm7330.tmp
+CMakeCCompilerABI.c
+Linking C executable cmTC_a12ba.exe
+	C:\Users\avita\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\202.7660.37\bin\cmake\win\bin\cmake.exe -E vs_link_exe --intdir=CMakeFiles\cmTC_a12ba.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\mt.exe --manifests  -- C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\link.exe /nologo @CMakeFiles\cmTC_a12ba.dir\objects1.rsp @C:\Users\avita\AppData\Local\Temp\nm7360.tmp
+	powershell -noprofile -executionpolicy Bypass -file C:/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary "C:/Users/avita/Advanced RAT2/cmake-build-release/CMakeFiles/CMakeTmp/cmTC_a12ba.exe" -installedDir C:/vcpkg/installed/x64-windows/debug/bin -OutVariable out
+
+
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: C:/Users/avita/Advanced RAT2/cmake-build-release/CMakeFiles/CMakeTmp
+
+Run Build Command(s):nmake /nologo cmTC_5562a\fast && 	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\bin\HostX64\x64\nmake.exe"  -f CMakeFiles\cmTC_5562a.dir\build.make /nologo -L                  CMakeFiles\cmTC_5562a.dir\build
+Building CXX object CMakeFiles/cmTC_5562a.dir/testCXXCompiler.cxx.obj
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\cl.exe @C:\Users\avita\AppData\Local\Temp\nm75D0.tmp
+testCXXCompiler.cxx
+Linking CXX executable cmTC_5562a.exe
+	C:\Users\avita\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\202.7660.37\bin\cmake\win\bin\cmake.exe -E vs_link_exe --intdir=CMakeFiles\cmTC_5562a.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\mt.exe --manifests  -- C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\link.exe /nologo @CMakeFiles\cmTC_5562a.dir\objects1.rsp @C:\Users\avita\AppData\Local\Temp\nm7611.tmp
+	powershell -noprofile -executionpolicy Bypass -file C:/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary "C:/Users/avita/Advanced RAT2/cmake-build-release/CMakeFiles/CMakeTmp/cmTC_5562a.exe" -installedDir C:/vcpkg/installed/x64-windows/debug/bin -OutVariable out
+
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: C:/Users/avita/Advanced RAT2/cmake-build-release/CMakeFiles/CMakeTmp
+
+Run Build Command(s):nmake /nologo cmTC_6ba15\fast && 	"C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\bin\HostX64\x64\nmake.exe"  -f CMakeFiles\cmTC_6ba15.dir\build.make /nologo -L                  CMakeFiles\cmTC_6ba15.dir\build
+Building CXX object CMakeFiles/cmTC_6ba15.dir/CMakeCXXCompilerABI.cpp.obj
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\cl.exe @C:\Users\avita\AppData\Local\Temp\nm7860.tmp
+CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_6ba15.exe
+	C:\Users\avita\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\202.7660.37\bin\cmake\win\bin\cmake.exe -E vs_link_exe --intdir=CMakeFiles\cmTC_6ba15.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\mt.exe --manifests  -- C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\link.exe /nologo @CMakeFiles\cmTC_6ba15.dir\objects1.rsp @C:\Users\avita\AppData\Local\Temp\nm78A0.tmp
+	powershell -noprofile -executionpolicy Bypass -file C:/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary "C:/Users/avita/Advanced RAT2/cmake-build-release/CMakeFiles/CMakeTmp/cmTC_6ba15.exe" -installedDir C:/vcpkg/installed/x64-windows/debug/bin -OutVariable out
+
+
+
