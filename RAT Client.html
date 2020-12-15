@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utg-8">
+
+<script>
+
+    var client;
+    var content = "";
+
+    function startConnection() {
+        client = new WebSocket("ws://127.0.0.1:7777", 'websocket')
+        client.onopen = function () {
+            alert("Connected!")
+            client.send('The client connected!')
+        }
+        client.onmessage = function (data) {
+            if (typeof data.data === 'string') {
+                console.log("Received: '" + data.data + "'");
+                content += data.data + "&#13;&#10;"
+                document.getElementById('area').innerHTML = content;
+            }
+        };
+        client.onclose = function () {
+            alert('The connection was close')
+        }
+
+    }
+
+    document.getElementById('command', function () {
+        if (key.keyCode === 13 && document.getElementById('command').value != "") {
+            alert("test")
+        }
+    })
+
+
+    function sendCommand() {
+        client.send(document.getElementById('command').value)
+    }
+
+
+</script>
+
+<body>
+
+
+<form>
+    <label for="command">Please Enter Command:</label>
+    <input type="text" autofocus id="command" name="Command"><br><br>
+    <button type="button" onclick="sendCommand()">Send Command</button>
+    <button type="button" onclick="startConnection()">Start Connection</button>
+
+</form>
+
+<textarea id="area" name="output area" rows="80" cols="130"></textarea>
+
+
+</body>
+
+
+</html>
