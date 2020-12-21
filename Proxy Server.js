@@ -1,6 +1,7 @@
 var WebSocketServer = require('websocket').server;
 var net = require('net')
 var http = require('http');
+var client = new net.Socket();
 
 
 var server = http.createServer(function (request, response) {
@@ -8,13 +9,29 @@ var server = http.createServer(function (request, response) {
     response.writeHead(404);
     response.end();
 });
-server.listen(7777, function () {
+
+
+server.listen(5555, '0.0.0.0', function () {
     console.log((new Date()) + ' Server is listening on port ' + 7777);
 });
 
-var client = new net.Socket();
-client.connect(8888, '127.0.0.1', function () {
-    console.log("Connected to the python sever")
+
+async function createConnection() {
+    await client.connect(8888, '127.0.0.1', function () {
+        console.log("Connected to the python sever")
+    })
+}
+
+createConnection()
+
+client.on('close', function () {
+    console.log("TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
+})
+
+client.on('error', function (ex) {
+    console.log("error")
+    console.log(ex)
+    createConnection()
 })
 
 
@@ -42,27 +59,23 @@ wsServer.on('request', function (request) {
     }
 
     var connection = request.accept('websocket', request.origin);
-
     client.on('data', function (data) {
-        connection.send(data.toString())
+        if (data.toString().startsWith('Connected$')) {
+            connection.send(data.toString())
+        } else {
+            connection.send(data.toString())
+        }
     })
-
-
     console.log((new Date()) + ' Connection accepted.');
     connection.on('message', function (message) {
-        if (message.type === 'utf8') {
-            console.log('Received Message: ' + message.utf8Data);
-            client.write(message.utf8Data)
-        } else if (message.type === 'binary') {
-            console.log('Received Binary Message of ' + message.binaryData.length + ' bytes');
-            connection.sendBytes(message.binaryData);
-        }
+        console.log('Received Message: ' + message.utf8Data);
+        client.write(message.utf8Data)
+
     });
+
     connection.on('close', function (reasonCode, description) {
         console.log((new Date()) + ' Peer ' + connection.remoteAddress + ' disconnected.');
     });
+
+
 });
-
-
-
-
