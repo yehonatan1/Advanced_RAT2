@@ -1,4 +1,4 @@
-var WebSocketServer = require('websocket').server;
+ar WebSocketServer = require('websocket').server;
 var net = require('net')
 var http = require('http');
 var client = new net.Socket();
