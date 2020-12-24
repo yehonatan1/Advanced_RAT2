@@ -8,20 +8,34 @@
     var content = "";
     var contentLength = 0;
     var command;
+    var firstConnect = true
 
     function startConnection() {
         //client = new WebSocket("ws://127.0.0.1:7777", 'websocket')
         client = new WebSocket("ws://141.226.121.68:5555", 'websocket')
-
         client.onopen = function () {
-            //alert("Connected!")
-            //client.send('The client connected!')
         }
+        //alert("Connected!")
+        //client.send('The client connected!')
+
+
         client.onmessage = function (data) {
             if (data.data.startsWith("Connected$")) {
                 data = data.data.substr(11, data.data.length)
                 document.getElementById('select ip').innerHTML += '<option value=' + data + '>' + data + '</option>'
                 alert(data + " Connected!")
+            } else if (firstConnect === true) {
+                data = JSON.parse(data.data)
+                firstConnect = false
+                var connected = '';
+                for (var i = 0; i < data.length; i++) {
+                    data[i] = data[i].substr(11, data[i].length)
+                    document.getElementById('select ip').innerHTML += '<option value=' + data[i] + '>' + data[i] + '</option>';
+                    connected += data[i];
+                    console.log(data[i]);
+                }
+                alert(connected)
+                console.log(data);
             } else {
                 console.log("Received: '" + data.data + "'");
                 content = data.data + "\n"
@@ -29,12 +43,11 @@
                 console.log("length is " + contentLength)
                 document.getElementById('area').value += content
             }
-
+            firstConnect = false
         };
         client.onclose = function () {
             alert('The connection was close')
         }
-
     }
 
     document.onkeypress = function (e) {
@@ -84,6 +97,5 @@
 
 
 </body>
-
 
 </html>
