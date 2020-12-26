@@ -203,7 +203,7 @@ void Connection::connection() {
 
             //If the command is not returning an output
             if (output.size() == 0) {
-                send(sock, ("Cant find the command " + command).c_str(), command.size() + 22, 0);
+                send(sock, " ", 1, 0);
                 continue;
             }
             send(sock, reinterpret_cast<const char *>(unOutput.c_str()), unOutput.size(), 0);

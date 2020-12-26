@@ -47,10 +47,10 @@ RM = C:\Users\avita\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\203.5981.166
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "C:\Users\avita\Advanced RAT2"
+CMAKE_SOURCE_DIR = C:\Users\avita\Advanced_RAT2
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "C:\Users\avita\Advanced RAT2\cmake-build-release"
+CMAKE_BINARY_DIR = C:\Users\avita\Advanced_RAT2\cmake-build-release
 
 # Include any dependencies generated for this target.
 include CMakeFiles\Advanced_RAT2.dir\depend.make
@@ -63,40 +63,40 @@ include CMakeFiles\Advanced_RAT2.dir\flags.make
 
 CMakeFiles\Advanced_RAT2.dir\main.cpp.obj: CMakeFiles\Advanced_RAT2.dir\flags.make
 CMakeFiles\Advanced_RAT2.dir\main.cpp.obj: ..\main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\avita\Advanced RAT2\cmake-build-release\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Advanced_RAT2.dir/main.cpp.obj"
-	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Advanced_RAT2.dir\main.cpp.obj /FdCMakeFiles\Advanced_RAT2.dir\ /FS -c "C:\Users\avita\Advanced RAT2\main.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\avita\Advanced_RAT2\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Advanced_RAT2.dir/main.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx64\x64\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Advanced_RAT2.dir\main.cpp.obj /FdCMakeFiles\Advanced_RAT2.dir\ /FS -c C:\Users\avita\Advanced_RAT2\main.cpp
 <<
 
 CMakeFiles\Advanced_RAT2.dir\main.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Advanced_RAT2.dir/main.cpp.i"
-	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\cl.exe > CMakeFiles\Advanced_RAT2.dir\main.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\avita\Advanced RAT2\main.cpp"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx64\x64\cl.exe > CMakeFiles\Advanced_RAT2.dir\main.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\avita\Advanced_RAT2\main.cpp
 <<
 
 CMakeFiles\Advanced_RAT2.dir\main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Advanced_RAT2.dir/main.cpp.s"
-	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\Advanced_RAT2.dir\main.cpp.s /c "C:\Users\avita\Advanced RAT2\main.cpp"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx64\x64\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\Advanced_RAT2.dir\main.cpp.s /c C:\Users\avita\Advanced_RAT2\main.cpp
 <<
 
 CMakeFiles\Advanced_RAT2.dir\Connection.cpp.obj: CMakeFiles\Advanced_RAT2.dir\flags.make
 CMakeFiles\Advanced_RAT2.dir\Connection.cpp.obj: ..\Connection.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\avita\Advanced RAT2\cmake-build-release\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Advanced_RAT2.dir/Connection.cpp.obj"
-	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Advanced_RAT2.dir\Connection.cpp.obj /FdCMakeFiles\Advanced_RAT2.dir\ /FS -c "C:\Users\avita\Advanced RAT2\Connection.cpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=C:\Users\avita\Advanced_RAT2\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Advanced_RAT2.dir/Connection.cpp.obj"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx64\x64\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoCMakeFiles\Advanced_RAT2.dir\Connection.cpp.obj /FdCMakeFiles\Advanced_RAT2.dir\ /FS -c C:\Users\avita\Advanced_RAT2\Connection.cpp
 <<
 
 CMakeFiles\Advanced_RAT2.dir\Connection.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Advanced_RAT2.dir/Connection.cpp.i"
-	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\cl.exe > CMakeFiles\Advanced_RAT2.dir\Connection.cpp.i @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\avita\Advanced RAT2\Connection.cpp"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx64\x64\cl.exe > CMakeFiles\Advanced_RAT2.dir\Connection.cpp.i @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\avita\Advanced_RAT2\Connection.cpp
 <<
 
 CMakeFiles\Advanced_RAT2.dir\Connection.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Advanced_RAT2.dir/Connection.cpp.s"
-	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\cl.exe @<<
- /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\Advanced_RAT2.dir\Connection.cpp.s /c "C:\Users\avita\Advanced RAT2\Connection.cpp"
+	C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx64\x64\cl.exe @<<
+ /nologo /TP $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) /FoNUL /FAs /FaCMakeFiles\Advanced_RAT2.dir\Connection.cpp.s /c C:\Users\avita\Advanced_RAT2\Connection.cpp
 <<
 
 # Object files for target Advanced_RAT2
@@ -111,11 +111,10 @@ Advanced_RAT2.exe: CMakeFiles\Advanced_RAT2.dir\main.cpp.obj
 Advanced_RAT2.exe: CMakeFiles\Advanced_RAT2.dir\Connection.cpp.obj
 Advanced_RAT2.exe: CMakeFiles\Advanced_RAT2.dir\build.make
 Advanced_RAT2.exe: CMakeFiles\Advanced_RAT2.dir\objects1.rsp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="C:\Users\avita\Advanced RAT2\cmake-build-release\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable Advanced_RAT2.exe"
-	C:\Users\avita\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\203.5981.166\bin\cmake\win\bin\cmake.exe -E vs_link_exe --intdir=CMakeFiles\Advanced_RAT2.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\mt.exe --manifests  -- C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1427~1.291\bin\Hostx64\x64\link.exe /nologo @CMakeFiles\Advanced_RAT2.dir\objects1.rsp @<<
- /out:Advanced_RAT2.exe /implib:Advanced_RAT2.lib /pdb:"C:\Users\avita\Advanced RAT2\cmake-build-release\Advanced_RAT2.pdb" /version:0.0  /machine:x64 /INCREMENTAL:NO /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib 
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=C:\Users\avita\Advanced_RAT2\cmake-build-release\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable Advanced_RAT2.exe"
+	C:\Users\avita\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\203.5981.166\bin\cmake\win\bin\cmake.exe -E vs_link_exe --intdir=CMakeFiles\Advanced_RAT2.dir --rc=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\rc.exe --mt=C:\PROGRA~2\WI3CF2~1\10\bin\100190~1.0\x64\mt.exe --manifests  -- C:\PROGRA~2\MICROS~2\2019\COMMUN~1\VC\Tools\MSVC\1428~1.293\bin\Hostx64\x64\link.exe /nologo @CMakeFiles\Advanced_RAT2.dir\objects1.rsp @<<
+ /out:Advanced_RAT2.exe /implib:Advanced_RAT2.lib /pdb:C:\Users\avita\Advanced_RAT2\cmake-build-release\Advanced_RAT2.pdb /version:0.0  /machine:x64 /INCREMENTAL:NO /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib 
 <<
-	C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary "C:/Users/avita/Advanced RAT2/cmake-build-release/Advanced_RAT2.exe" -installedDir C:/vcpkg/installed/x64-windows/bin -OutVariable out
 
 # Rule to build all files generated by this target.
 CMakeFiles\Advanced_RAT2.dir\build: Advanced_RAT2.exe
@@ -127,6 +126,6 @@ CMakeFiles\Advanced_RAT2.dir\clean:
 .PHONY : CMakeFiles\Advanced_RAT2.dir\clean
 
 CMakeFiles\Advanced_RAT2.dir\depend:
-	$(CMAKE_COMMAND) -E cmake_depends "NMake Makefiles" "C:\Users\avita\Advanced RAT2" "C:\Users\avita\Advanced RAT2" "C:\Users\avita\Advanced RAT2\cmake-build-release" "C:\Users\avita\Advanced RAT2\cmake-build-release" "C:\Users\avita\Advanced RAT2\cmake-build-release\CMakeFiles\Advanced_RAT2.dir\DependInfo.cmake" --color=$(COLOR)
+	$(CMAKE_COMMAND) -E cmake_depends "NMake Makefiles" C:\Users\avita\Advanced_RAT2 C:\Users\avita\Advanced_RAT2 C:\Users\avita\Advanced_RAT2\cmake-build-release C:\Users\avita\Advanced_RAT2\cmake-build-release C:\Users\avita\Advanced_RAT2\cmake-build-release\CMakeFiles\Advanced_RAT2.dir\DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles\Advanced_RAT2.dir\depend
 

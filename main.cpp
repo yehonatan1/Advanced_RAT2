@@ -7,7 +7,7 @@ int main() {
     ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
 
     string ip = "127.0.0.1";
-    int port = 9098;
+    int port = 9999;
 
     Connection *connection = new Connection(ip, port);
     BOOL success = connection->boot();
