@@ -162,11 +162,7 @@ class Server:
             try:
                 command = json.loads(self.web_server_socket.recv(1024).decode())
                 print(command)
-                if command[1] == '':
-                    continue
-
                 self.run_command(command[0], self.sockets_ip[command[1]])
-
             except socket.error as e:
                 del self.web_server_socket
                 print("There is an error")
@@ -255,12 +251,8 @@ class Server:
     # self.server_socket.close()
 
 
-myServer = Server(9098, '127.0.0.1', 1, 'client1')
-while True:
-    try:
-        myServer.runThread()
-    except Exception as e:
-        print(e)
+myServer = Server(9999, '127.0.0.1', 1, 'client1')
+myServer.runThread()
 
 # myServer2 = Server(9999, '127.0.0.1', 1, 'client2')
 #
