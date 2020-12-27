@@ -19,10 +19,7 @@ server.listen(5555, '0.0.0.0', function () {
 async function createConnection() {
     await client.connect(6666, '127.0.0.1', function () {
         console.log("Connected to the python sever")
-        console.log("Connected to the python sever")
-        
-        
-        
+
     })
 }
 

