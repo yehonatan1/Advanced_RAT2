@@ -15,7 +15,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "C:/Users/avita/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/203.5981.166/bin/cmake/win/share/cmake-3.17/Modules/CMakeCInformation.cmake"
   "C:/Users/avita/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/203.5981.166/bin/cmake/win/share/cmake-3.17/Modules/CMakeCXXInformation.cmake"
   "C:/Users/avita/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/203.5981.166/bin/cmake/win/share/cmake-3.17/Modules/CMakeCommonLanguageInclude.cmake"
-  "C:/Users/avita/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/203.5981.166/bin/cmake/win/share/cmake-3.17/Modules/CMakeDependentOption.cmake"
   "C:/Users/avita/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/203.5981.166/bin/cmake/win/share/cmake-3.17/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake"
   "C:/Users/avita/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/203.5981.166/bin/cmake/win/share/cmake-3.17/Modules/CMakeFindCodeBlocks.cmake"
   "C:/Users/avita/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/203.5981.166/bin/cmake/win/share/cmake-3.17/Modules/CMakeGenericSystem.cmake"
@@ -33,7 +32,6 @@ set(CMAKE_MAKEFILE_DEPENDS
   "C:/Users/avita/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/203.5981.166/bin/cmake/win/share/cmake-3.17/Modules/Platform/Windows.cmake"
   "C:/Users/avita/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/203.5981.166/bin/cmake/win/share/cmake-3.17/Modules/Platform/WindowsPaths.cmake"
   "C:/Users/avita/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/203.5981.166/bin/cmake/win/share/cmake-3.17/Modules/ProcessorCount.cmake"
-  "C:/vcpkg/scripts/buildsystems/vcpkg.cmake"
   )
 
 # The corresponding makefile is:

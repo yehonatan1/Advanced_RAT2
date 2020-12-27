@@ -1,4 +1,4 @@
-C:\Users\avita\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\203.5981.166\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake -G "CodeBlocks - NMake Makefiles" "C:\Users\avita\Advanced RAT2"
+C:\Users\avita\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\203.5981.166\bin\cmake\win\bin\cmake.exe -DCMAKE_BUILD_TYPE=Release -G "CodeBlocks - NMake Makefiles" C:\Users\avita\Advanced_RAT2
 -- Configuring done
 -- Generating done
--- Build files have been written to: C:/Users/avita/Advanced RAT2/cmake-build-release
+-- Build files have been written to: C:/Users/avita/Advanced_RAT2/cmake-build-release

