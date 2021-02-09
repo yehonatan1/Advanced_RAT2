@@ -37,7 +37,7 @@ Commands
 |recv file| `(The path of the file that you wanna take in victim computer)`|Taking the file in the path from the victim|
 |get files| `(The path of the directory)`|Getting all the names of files in the path include directories and sun directories|
 |cmd| `(The command that you want to execute)`|Running the command in cmd and returning the output|
-|quit|``|Quits the Client|
+|quit| |Quits the Client|
 
 
 Requirements
