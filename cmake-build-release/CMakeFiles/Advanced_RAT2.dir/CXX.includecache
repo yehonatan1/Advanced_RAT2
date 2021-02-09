@@ -6,10 +6,6 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/avita/Advanced_RAT2/Connection.cpp
-Connection.h
-C:/Users/avita/Advanced_RAT2/Connection.h
-
 C:/Users/avita/Advanced_RAT2/Connection.h
 iostream
 -
@@ -35,4 +31,12 @@ Lmcons.h
 -
 filesystem
 -
+
+C:/Users/avita/Advanced_RAT2/main.cpp
+iostream
+-
+intrin.h
+-
+Connection.h
+C:/Users/avita/Advanced_RAT2/Connection.h
 

