@@ -1,5 +1,5 @@
 ## RAT application
-Advanced_RAT2 is a web based RAT developed in C++.
+Advanced_RAT2 is a web based RAT developed in C++ for Windows OS.
 It features a straight-forward set of commands that allows for near complete control of a computer.
 Features
 ---
@@ -11,9 +11,13 @@ Features
 * invisible to all the Antivirus in VirusTotal.
 * Can be controlled from the and from any place
 * Starting after computer restart
-* Hiding himself
+* Hiding himself in %LOCALAPPDATA%\test001.exe
+* Hiding the application window
 * Working on WAN
 * Getting all the files in a directory
+* If the Python server or The client (RAT) or The Node.js Server are crashed the other programs won't crash
+
+
 
 Videos
 ---
