@@ -16,6 +16,8 @@ Features
 * Working on WAN
 * Getting all the files in a directory
 * If the Python server or The client (RAT) or The Node.js Server are crashed the other programs won't crash
+* Can be used from everywhere and also from the phone
+* Very simple to use
 
 
 
