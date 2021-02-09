@@ -3,6 +3,10 @@
 Advanced_RAT2 is a web based RAT developed in C++ for Windows OS.
 It features a straight-forward set of [commands](#commands) that allows for near complete control of a computer.
 
+![Advanced_RAT2](application.png)
+Here lines means that there is a direct connection between the applications both receive and send data.
+
+
 Features
 ---
 * Remote Command Execution via CMD
@@ -20,7 +24,6 @@ Features
 * If the Python server or The client (RAT) or The Node.js Server are crashed the other programs won't crash
 * Can be used from everywhere and also from the phone
 * Very simple to use
-
 
 
 Videos
