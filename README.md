@@ -3,7 +3,7 @@
 Advanced_RAT2 is a web based RAT developed in C++ for Windows OS.
 It features a straight-forward set of [commands](#commands) that allows for near complete control of a computer.
 
-How It Works:
+How It Works?
 ---
 
 ![Advanced_RAT2](application.png)
