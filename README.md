@@ -10,7 +10,7 @@ How It Works?
 Here the lines means that there is a direct connection between the applications, both receive and send data.
 
 The Website sends a command to the Node.js Server, and the Node.js Server sends the command to the Python Server, and The Python server sends the command to the RAT.
-The RAT execute the command and sending the output to the Python Server, and the Python Server sends the output to the Node.js Server, and the Node.js Server sends
+The RAT executes the command and sending the output to the Python Server, and the Python Server sends the output to the Node.js Server, and the Node.js Server sends
 the output to the website, and the website displays the output.
 
 Features
