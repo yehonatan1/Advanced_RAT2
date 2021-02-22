@@ -76,6 +76,7 @@ void Connection::sendFile(string path) {
         cout << "ERROR " << CANT_OPEN_FILE << " Cant open the file" << endl;
         return;
     }
+    sendMessage(FILE_OPENED);
     vector<char> buffer(BUFFER_SIZE + 1, 0);
     DWORD bytesRead = sizeof(DWORD);
     LARGE_INTEGER fileSize;
@@ -108,12 +109,12 @@ void Connection::sendFile(string path) {
 
 void Connection::recvFile(string path) {
     vector<char> buffer(BUFFER_SIZE + 1, 0);
+
     HANDLE hFile = ::CreateFileA(path.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                  NULL,
                                  CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
         sendMessage(CANT_OPEN_FILE);
-        //sendMessage("Cant open the file");
         cout << "ERROR " << CANT_OPEN_FILE << " Cant open the file" << endl;
         CloseHandle(hFile);
         return;
@@ -262,6 +263,7 @@ void Connection::connection() {
             continue;
         } else if (!command.rfind("send file")) {
             vector<char> buffer(MAX_PATH + 1, 0);
+            cout << "The file code is " << buffer.data() << endl;
             recv(sock, buffer.data(), MAX_PATH, 0); //Where to save the file
             cout << "The file path is " << buffer.data() << endl;
             recvFile(buffer.data());
@@ -283,7 +285,6 @@ void Connection::connection() {
                     x += "$";
                 }
             }
-
             send(sock, x.c_str(), 20, 0);
             //send(sock, to_string(files.size()).c_str(), 20, 0);
             //sendMessage(to_string(files.size()).c_str());
@@ -298,7 +299,6 @@ void Connection::connection() {
         cout << "The command " << command << " was not found" << endl;
 
     }
-
 
 
     //The end of the program
