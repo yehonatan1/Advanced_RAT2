@@ -30,6 +30,9 @@
 #define COMMAND_NOT_FOUND  "300@" // Cant open find the command
 #define CANT_OPEN_HANDLE   "400@" // Cant open handle
 #define HANDLE_WAS_OPENED  "500@" //Handle was opened successfully
+#define FILE_OPENED        "600@" //The file was opened
+#define FILE_EXIST         "700@" //The file is existing
+#define FILE_NOT_EXIST     "800@" //The file is not exist
 
 #pragma warning(disable:4996)
 #pragma comment (lib, "Ws2_32.lib")
