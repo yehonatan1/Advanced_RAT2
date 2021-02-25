@@ -16,6 +16,7 @@
 #include <memory>
 #include <fstream>
 #include <WS2tcpip.h>
+#include "Keylogger.h"
 #include <windows.h>
 #include<algorithm>
 #include <tchar.h>

