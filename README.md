@@ -16,6 +16,7 @@ the output to the website, and the website displays the output.
 Features
 ---
 * Remote Command Execution via CMD
+* Remote Command And Scripts Execution via Powershell
 * Multiple Connections
 * Stealing files
 * Sending files and execute them (It can be virus or any other file)
@@ -26,6 +27,7 @@ Features
 * Hiding himself in %LOCALAPPDATA%\test001.exe
 * Hiding the application window
 * Working on WAN
+* Broadcast Clients
 * Getting all the files in a directory
 * If the Python server or The client (RAT) or The Node.js Server are crashed the other programs won't crash
 * Can be used from everywhere and also from the phone
@@ -46,6 +48,8 @@ Commands
 |recv file| `(The path of the file that you wanna take in victim computer)`|Taking the file in the path from the victim|
 |get files| `(The path of the directory)`|Getting all the names of files in the path include directories and sun directories|
 |cmd| `(The command that you want to execute)`|Running the command in cmd and returning the output|
+|powershell| `(The command that you want to execute)`|Running the command in powershell and returning the output|'
+|broadcast| `(The command that you want to execute)`|Running the command in every single client|
 |quit| |Quits the Client|
 
 
