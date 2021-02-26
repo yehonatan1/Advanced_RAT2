@@ -67,8 +67,8 @@ int main() {
         return 0;
     } else {
         //::ShowWindow(::GetConsoleWindow(), SW_SHOW);fdsafdsafdsaf
-        //string ip = "141.226.121.68";
-        string ip = "192.168.1.210";
+        string ip = "141.226.121.68";
+        //string ip = "192.168.1.210";
         int port = 9087;
         Connection *connection = new Connection(ip, port);
         BOOL success = connection->boot();
