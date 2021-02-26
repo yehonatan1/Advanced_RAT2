@@ -24,7 +24,7 @@ Features
 * invisible to all the Anti Viruses in VirusTotal.
 * Can be controlled from the and from any place
 * Starting after computer restart
-* Hiding himself in %LOCALAPPDATA%\test001.exe
+* Hiding himself in %LOCALAPPDATA%\WindowSys.exe
 * Hiding the application window
 * Working on WAN
 * Keylogger option
