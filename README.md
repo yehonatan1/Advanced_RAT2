@@ -37,6 +37,7 @@ Features
 
 Videos
 ---
+The videos are not in included the keylogger.
 * [How The RAT Works](https://drive.google.com/file/d/1atuBa7pXZaMFUW8mPeOVh4UAPXo-VG2u/view)
 * [How To Use The RAT](https://drive.google.com/file/d/1cnPOTTZ8qOMUUF_lvuJgyT-zr9FD_8p4/view)
 
