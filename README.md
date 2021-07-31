@@ -46,12 +46,12 @@ Commands
 ---
 |Command|Syntax|Comment|
 |-------|------|---------|
-|send file|`(The path of the file that you wanna to send)`|send the file in the path to the victim|
-|recv file| `(The path of the file that you wanna take in victim computer)`|Taking the file in the path from the victim|
-|get files| `(The path of the directory)`|Getting all the names of files in the path include directories and sun directories|
-|cmd| `(The command that you want to execute)`|Running the command in cmd and returning the output|
-|powershell| `(The command that you want to execute)`|Running the command in powershell and returning the output|'
-|broadcast| `(The command that you want to execute)`|Running the command in every single client|
+|send file|`(send file + (The path of the file that you wanna to send))`|send the file in the path to the victim|
+|recv file| `(recv file + (The path of the file that you wanna take in victim computer))`|Taking the file in the path from the victim|
+|get files|`get files + (The path of the directory)`|Getting all the names of files in the path include directories and sun directories|
+|cmd| `cmd + (The command that you want to execute)`|Running the command in cmd and returning the output|
+|powershell| `powershell + (The command that you want to execute)`|Running the command in powershell and returning the output|'
+|broadcast| `broadcast + (The command that you want to execute)`|Running the command in every single client|
 |start keylogger|`start keylogger`|Starting the keylogger|
 |stop keylogger|`stop keylogger`|Stopping the keylogger and sending the keylogger file to you|
 |quit|`quit`|Closing the client|
