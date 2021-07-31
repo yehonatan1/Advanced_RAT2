@@ -52,9 +52,9 @@ Commands
 |cmd| `(The command that you want to execute)`|Running the command in cmd and returning the output|
 |powershell| `(The command that you want to execute)`|Running the command in powershell and returning the output|'
 |broadcast| `(The command that you want to execute)`|Running the command in every single client|
-|start keylogger| |Starting the keylogger|
-|stop keylogger| |Stopping the keylogger and sending the keylogger file to you|
-|quit| |Closing the client|
+|start keylogger|`start keylogger`|Starting the keylogger|
+|stop keylogger|`stop keylogger`|Stopping the keylogger and sending the keylogger file to you|
+|quit|`quit`|Closing the client|
 
 Requirements
 ---
